@@ -1,19 +1,51 @@
+import { useEffect, useRef } from 'react';
 import { Button, Frame, InfoBar, Spinner } from 'web-toolkit';
-import type { ModSummary, ViewMode } from '../types/mod';
+import type { ModSummary } from '../types/mod';
 import { ModCard } from './ModCard';
-import { ModListRow } from './ModListRow';
 
 interface ResultsProps {
   mods: ModSummary[];
   loading: boolean;
+  loadingMore: boolean;
   error: string | null;
   hasLoadedMods: boolean;
-  viewMode: ViewMode;
+  hasMore: boolean;
   compact: boolean;
   onRetry: () => void;
+  onLoadMore: () => void;
 }
 
-export function Results({ mods, loading, error, hasLoadedMods, viewMode, compact, onRetry }: ResultsProps): JSX.Element {
+export function Results({ mods, loading, loadingMore, error, hasLoadedMods, hasMore, compact, onRetry, onLoadMore }: ResultsProps): JSX.Element {
+  const sentinelRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    const sentinel = sentinelRef.current;
+    if (!sentinel || loading || loadingMore || !hasMore || mods.length === 0) return undefined;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) onLoadMore();
+      },
+      { rootMargin: '600px 0px' },
+    );
+    observer.observe(sentinel);
+    return () => observer.disconnect();
+  }, [hasMore, loading, loadingMore, mods.length, onLoadMore]);
+
+  const loader = (
+    <div className="load-more-sentinel" ref={sentinelRef}>
+      {loadingMore ? (
+        <>
+          <Spinner />
+          <span>Loading more</span>
+        </>
+      ) : hasMore ? (
+        <Button onClick={onLoadMore}>Load more</Button>
+      ) : (
+        <span>End of today</span>
+      )}
+    </div>
+  );
+
   if (loading) {
     return (
       <Frame className="state-panel">
@@ -53,21 +85,14 @@ export function Results({ mods, loading, error, hasLoadedMods, viewMode, compact
     );
   }
 
-  if (viewMode === 'list') {
-    return (
-      <div className="results-list">
+  return (
+    <>
+      <div className="results-grid">
         {mods.map((mod) => (
-          <ModListRow key={mod.id} mod={mod} compact={compact} />
+          <ModCard key={mod.id} mod={mod} compact={compact} />
         ))}
       </div>
-    );
-  }
-
-  return (
-    <div className="results-grid">
-      {mods.map((mod) => (
-        <ModCard key={mod.id} mod={mod} compact={compact} />
-      ))}
-    </div>
+      {loader}
+    </>
   );
 }
