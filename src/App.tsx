@@ -37,18 +37,17 @@ function routeFromLocation(): RouteState {
   const source = window.location.search || (window.location.hash.startsWith('#?') ? window.location.hash.slice(1) : '');
   const params = new URLSearchParams(source);
   const gameId = Number(params.get('game'));
+  const state = window.history.state as Partial<RouteState> | null;
   return {
     gameId: Number.isFinite(gameId) && gameId > 0 ? gameId : null,
-    gameName: params.get('name'),
-    gameImage: params.get('image'),
+    gameName: state?.gameName || null,
+    gameImage: state?.gameImage || null,
   };
 }
 
 function gameUrl(game: GameSummary): string {
   const params = new URLSearchParams();
   params.set('game', String(game.id));
-  params.set('name', game.name);
-  if (game.imageUrl) params.set('image', game.imageUrl);
   return `${appBasePath}?${params.toString()}`;
 }
 
@@ -216,12 +215,13 @@ function App(): JSX.Element {
   }, []);
 
   const selectGame = (game: GameSummary) => {
-    window.history.pushState(null, '', gameUrl(game));
-    setRoute({ gameId: game.id, gameName: game.name, gameImage: game.imageUrl || null });
+    const nextRoute = { gameId: game.id, gameName: game.name, gameImage: game.imageUrl || null };
+    window.history.pushState(nextRoute, '', gameUrl(game));
+    setRoute(nextRoute);
   };
 
   const backToGames = () => {
-    window.history.pushState(null, '', appBasePath);
+    window.history.pushState({ gameId: null, gameName: null, gameImage: null }, '', appBasePath);
     setRoute({ gameId: null, gameName: null, gameImage: null });
   };
 
