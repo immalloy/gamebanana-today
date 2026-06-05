@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react';
-import { Box, Paned } from 'web-toolkit';
+import { Box } from 'web-toolkit';
 import { AppHeader } from './components/AppHeader';
 import { FilterSidebar } from './components/FilterSidebar';
 import { Highlights } from './components/Highlights';
@@ -38,7 +38,7 @@ function App(): JSX.Element {
         onSearchChange={setSearch}
         onRefresh={refresh}
       />
-      <Paned defaultSize={282} fill border="handle" className="app-paned">
+      <div className="app-shell">
         <FilterSidebar
           filters={filters}
           sortMode={sortMode}
@@ -73,7 +73,7 @@ function App(): JSX.Element {
             />
           </section>
         </main>
-      </Paned>
+      </div>
     </Box>
   );
 }

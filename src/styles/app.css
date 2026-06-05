@@ -97,8 +97,10 @@ a {
   gap: 8px;
 }
 
-.app-paned {
-  min-height: auto;
+.app-shell {
+  display: grid;
+  grid-template-columns: 282px minmax(0, 1fr);
+  align-items: start;
 }
 
 .sidebar {
@@ -393,7 +395,7 @@ a {
     width: 100%;
   }
 
-  .app-paned {
+  .app-shell {
     display: block;
   }
 
