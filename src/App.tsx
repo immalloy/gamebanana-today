@@ -1,20 +1,74 @@
-import { useMemo, useState } from 'react';
-import { Box } from 'web-toolkit';
+import { useEffect, useMemo, useState } from 'react';
+import { ArrowLeft } from 'lucide-react';
+import { Box, Button } from 'web-toolkit';
 import { AppHeader } from './components/AppHeader';
 import { FilterSidebar } from './components/FilterSidebar';
+import { GameSelector } from './components/GameSelector';
 import { Highlights } from './components/Highlights';
 import { Results } from './components/Results';
-import { useTodayMods } from './hooks/useTodayMods';
+import { useGameMods } from './hooks/useGameMods';
+import { useGames } from './hooks/useGames';
+import { formatRange, rangeLabel as getRangeLabel } from './lib/date';
 import { applyFilters, getOptionValues, sortMods } from './lib/filterSort';
 import { selectHighlights } from './lib/highlights';
+import type { GameFilterState, GameSummary, RangeMode } from './types/game';
 import type { FilterState, SortMode } from './types/mod';
 
 const defaultFilters: FilterState = {
   category: 'all',
 };
 
-function App(): JSX.Element {
-  const { mods, loading, loadingMore, error, dayRange, hasMore, refresh, loadMore } = useTodayMods();
+const defaultGameFilters: GameFilterState = {
+  name: '',
+  nameOperator: 'contains',
+  sort: 'Game_MostSubmissions',
+};
+
+interface RouteState {
+  gameId: number | null;
+  gameName: string | null;
+}
+
+function routeFromLocation(): RouteState {
+  const source = window.location.search || (window.location.hash.startsWith('#?') ? window.location.hash.slice(1) : '');
+  const params = new URLSearchParams(source);
+  const gameId = Number(params.get('game'));
+  return {
+    gameId: Number.isFinite(gameId) && gameId > 0 ? gameId : null,
+    gameName: params.get('name'),
+  };
+}
+
+function gameUrl(game: GameSummary): string {
+  const params = new URLSearchParams();
+  params.set('game', String(game.id));
+  params.set('name', game.name);
+  return `/?${params.toString()}`;
+}
+
+function GameSelectorView({ onSelectGame }: { onSelectGame: (game: GameSummary) => void }): JSX.Element {
+  const [filters, setFilters] = useState(defaultGameFilters);
+  const { games, loading, loadingMore, error, hasMore, refresh, loadMore } = useGames(filters);
+
+  return (
+    <GameSelector
+      games={games}
+      filters={filters}
+      loading={loading}
+      loadingMore={loadingMore}
+      error={error}
+      hasMore={hasMore}
+      onFiltersApply={setFilters}
+      onLoadMore={loadMore}
+      onRetry={refresh}
+      onSelectGame={onSelectGame}
+    />
+  );
+}
+
+function GameModsView({ gameId, gameName, onBack }: { gameId: number; gameName: string; onBack: () => void }): JSX.Element {
+  const [rangeMode, setRangeMode] = useState<RangeMode>('daily');
+  const { mods, loading, loadingMore, error, range, hasMore, refresh, loadMore } = useGameMods({ gameId, rangeMode });
   const [search, setSearch] = useState('');
   const [sortMode, setSortMode] = useState<SortMode>('newest');
   const [filters, setFilters] = useState<FilterState>(defaultFilters);
@@ -23,56 +77,100 @@ function App(): JSX.Element {
   const categories = useMemo(() => getOptionValues(mods, 'category'), [mods]);
   const visibleMods = useMemo(() => sortMods(applyFilters(mods, search, filters), sortMode), [filters, mods, search, sortMode]);
   const highlights = useMemo(() => selectHighlights(mods, noDuplicateHighlights), [mods, noDuplicateHighlights]);
+  const readableRange = getRangeLabel(rangeMode);
+  const formattedRange = formatRange(rangeMode, range.start, range.end);
 
   const activeSummary = [
     search.trim() ? `search "${search.trim()}"` : '',
     filters.category !== 'all' ? filters.category : '',
+    sortMode !== 'newest' ? sortMode : '',
   ].filter(Boolean);
 
   return (
-    <Box vertical className="app background">
-      <AppHeader
-        dayRange={dayRange}
+    <div className="app-shell">
+      <FilterSidebar
+        filters={filters}
+        sortMode={sortMode}
         search={search}
-        loading={loading}
+        rangeMode={rangeMode}
+        categories={categories}
         onSearchChange={setSearch}
-        onRefresh={refresh}
+        onFiltersChange={setFilters}
+        onSortModeChange={setSortMode}
+        onRangeModeChange={setRangeMode}
+        onApply={refresh}
+        onReset={() => {
+          setSearch('');
+          setSortMode('newest');
+          setFilters(defaultFilters);
+          setRangeMode('daily');
+        }}
       />
-      <div className="app-shell">
-        <FilterSidebar
-          filters={filters}
-          sortMode={sortMode}
-          categories={categories}
-          onFiltersChange={setFilters}
-          onSortModeChange={setSortMode}
-          onReset={() => {
-            setSearch('');
-            setSortMode('newest');
-            setFilters(defaultFilters);
-          }}
-        />
-        <main className="content">
-          <Highlights highlights={highlights} noDuplicates={noDuplicateHighlights} onNoDuplicatesChange={setNoDuplicateHighlights} />
-          <section className="section">
-            <div className="section-heading">
-              <div>
-                <h2>Results</h2>
-              </div>
-              {activeSummary.length > 0 && <span>{activeSummary.join(' / ')}</span>}
+      <main className="content">
+        <section className="section game-title-section">
+          <Button className="back-button" onClick={onBack}>
+            <ArrowLeft size={16} aria-hidden="true" />
+            Games
+          </Button>
+          <div>
+            <h1>{gameName}</h1>
+            <p>{readableRange} Mods / {formattedRange}</p>
+          </div>
+        </section>
+        <Highlights highlights={highlights} rangeLabel={readableRange} noDuplicates={noDuplicateHighlights} onNoDuplicatesChange={setNoDuplicateHighlights} />
+        <section className="section">
+          <div className="section-heading">
+            <div>
+              <h2>Results</h2>
+              <p>{visibleMods.length.toLocaleString()} visible / {mods.length.toLocaleString()} loaded</p>
             </div>
-            <Results
-              mods={visibleMods}
-              loading={loading}
-              loadingMore={loadingMore}
-              error={error}
-              hasLoadedMods={mods.length > 0}
-              hasMore={hasMore}
-              onRetry={refresh}
-              onLoadMore={loadMore}
-            />
-          </section>
-        </main>
-      </div>
+            {activeSummary.length > 0 && <span>{activeSummary.join(' / ')}</span>}
+          </div>
+          <Results
+            mods={visibleMods}
+            gameName={gameName}
+            rangeLabel={readableRange}
+            loading={loading}
+            loadingMore={loadingMore}
+            error={error}
+            hasLoadedMods={mods.length > 0}
+            hasMore={hasMore}
+            onRetry={refresh}
+            onLoadMore={loadMore}
+          />
+        </section>
+      </main>
+    </div>
+  );
+}
+
+function App(): JSX.Element {
+  const [route, setRoute] = useState<RouteState>(() => routeFromLocation());
+
+  useEffect(() => {
+    const onPopState = () => setRoute(routeFromLocation());
+    window.addEventListener('popstate', onPopState);
+    return () => window.removeEventListener('popstate', onPopState);
+  }, []);
+
+  const selectGame = (game: GameSummary) => {
+    window.history.pushState(null, '', gameUrl(game));
+    setRoute({ gameId: game.id, gameName: game.name });
+  };
+
+  const backToGames = () => {
+    window.history.pushState(null, '', '/');
+    setRoute({ gameId: null, gameName: null });
+  };
+
+  return (
+    <Box vertical className="app background">
+      <AppHeader />
+      {route.gameId ? (
+        <GameModsView gameId={route.gameId} gameName={route.gameName || `Game ${route.gameId}`} onBack={backToGames} />
+      ) : (
+        <GameSelectorView onSelectGame={selectGame} />
+      )}
     </Box>
   );
 }
