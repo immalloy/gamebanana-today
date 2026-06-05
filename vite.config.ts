@@ -1,7 +1,8 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 
-export default defineConfig({
+export default defineConfig(({ command }) => ({
+  base: command === 'build' ? '/funkin-today/' : '/',
   plugins: [react()],
   build: {
     cssMinify: false,
@@ -10,4 +11,4 @@ export default defineConfig({
     environment: 'jsdom',
     globals: true,
   },
-});
+}));
