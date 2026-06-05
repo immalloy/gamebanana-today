@@ -1,8 +1,29 @@
+import type { RangeMode } from '../types/game';
+
 export function getLocalDayRange(now = new Date()): { start: Date; end: Date } {
   const start = new Date(now);
   start.setHours(0, 0, 0, 0);
   const end = new Date(start);
   end.setDate(start.getDate() + 1);
+  return { start, end };
+}
+
+export function getLocalRange(mode: RangeMode, now = new Date()): { start: Date; end: Date } {
+  if (mode === 'daily') return getLocalDayRange(now);
+
+  const start = new Date(now);
+  start.setHours(0, 0, 0, 0);
+
+  if (mode === 'weekly') {
+    start.setDate(start.getDate() - start.getDay());
+    const end = new Date(start);
+    end.setDate(start.getDate() + 7);
+    return { start, end };
+  }
+
+  start.setDate(1);
+  const end = new Date(start);
+  end.setMonth(start.getMonth() + 1);
   return { start, end };
 }
 
@@ -31,4 +52,28 @@ export function formatDayRange(start: Date, end: Date): string {
     minute: '2-digit',
   });
   return `${date}, ${time.format(start)}-${time.format(end)}`;
+}
+
+export function formatRange(mode: RangeMode, start: Date, end: Date): string {
+  if (mode === 'daily') return formatDayRange(start, end);
+
+  if (mode === 'weekly') {
+    const date = new Intl.DateTimeFormat(undefined, {
+      month: 'short',
+      day: 'numeric',
+    });
+    const inclusiveEnd = new Date(end.getTime() - 1);
+    return `${date.format(start)}-${date.format(inclusiveEnd)}`;
+  }
+
+  return new Intl.DateTimeFormat(undefined, {
+    month: 'long',
+    year: 'numeric',
+  }).format(start);
+}
+
+export function rangeLabel(mode: RangeMode): string {
+  if (mode === 'weekly') return 'Weekly';
+  if (mode === 'monthly') return 'Monthly';
+  return 'Daily';
 }
