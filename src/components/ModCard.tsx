@@ -9,8 +9,6 @@ interface ModCardProps {
 }
 
 export function ModCard({ mod, compact }: ModCardProps): JSX.Element {
-  const summary = mod.description || 'No description provided.';
-
   return (
     <Frame className={`mod-card ${compact ? 'compact' : ''}`}>
       <a className="mod-card__media" href={mod.url} target="_blank" rel="noreferrer" aria-label={`Open ${mod.name}`}>
@@ -23,7 +21,7 @@ export function ModCard({ mod, compact }: ModCardProps): JSX.Element {
         </div>
         <h3>{mod.name}</h3>
         <p className="byline">by {mod.submitterName}</p>
-        {!compact && <p className="mod-summary">{summary}</p>}
+        {!compact && mod.description && <p className="mod-summary">{mod.description}</p>}
         <div className="stat-row">
           <StatPill type="downloads" value={mod.downloads} label="Downloads" />
           <StatPill type="views" value={mod.views} label="Views" />
