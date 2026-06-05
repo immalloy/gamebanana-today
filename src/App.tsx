@@ -23,6 +23,7 @@ const defaultGameFilters: GameFilterState = {
   nameOperator: 'contains',
   sort: 'Game_MostSubmissions',
 };
+const appBasePath = import.meta.env.BASE_URL || '/';
 
 interface RouteState {
   gameId: number | null;
@@ -43,7 +44,7 @@ function gameUrl(game: GameSummary): string {
   const params = new URLSearchParams();
   params.set('game', String(game.id));
   params.set('name', game.name);
-  return `/?${params.toString()}`;
+  return `${appBasePath}?${params.toString()}`;
 }
 
 function GameSelectorView({ onSelectGame }: { onSelectGame: (game: GameSummary) => void }): JSX.Element {
@@ -159,7 +160,7 @@ function App(): JSX.Element {
   };
 
   const backToGames = () => {
-    window.history.pushState(null, '', '/');
+    window.history.pushState(null, '', appBasePath);
     setRoute({ gameId: null, gameName: null });
   };
 
