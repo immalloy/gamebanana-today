@@ -309,8 +309,7 @@ a {
 }
 
 .byline,
-.card-meta-line,
-.mod-summary {
+.card-meta-line {
   margin: 0;
   color: var(--muted);
 }
@@ -330,21 +329,6 @@ a {
 .card-meta-line span + span::before {
   content: "/";
   margin-right: 6px;
-}
-
-.mod-summary {
-  display: -webkit-box;
-  min-height: 44px;
-  margin-top: 10px;
-  overflow: hidden;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 2;
-  font-size: 14px;
-  line-height: 1.45;
-}
-
-.compact .mod-summary {
-  display: none;
 }
 
 .stat-row {

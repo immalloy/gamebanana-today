@@ -20,7 +20,6 @@ export function ModCard({ mod, compact }: ModCardProps): JSX.Element {
           <span>{mod.category}</span>
           <span>{new Intl.DateTimeFormat(undefined, { hour: 'numeric', minute: '2-digit' }).format(mod.addedAt)}</span>
         </p>
-        {!compact && mod.description && <p className="mod-summary">{mod.description}</p>}
         <div className="stat-row">
           <StatPill type="downloads" value={mod.downloads} label="Downloads" />
           <StatPill type="views" value={mod.views} label="Views" />
