@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { fetchGamePage, GAMES_PER_PAGE } from '../api/gamebanana';
-import { normalizeGame } from '../api/normalizeGame';
+import { fetchGamePage, fetchGameProfilePage, GAMES_PER_PAGE } from '../api/gamebanana';
+import { normalizeGame, normalizeGameModCount } from '../api/normalizeGame';
 import type { GameFilterState, GameSummary } from '../types/game';
 
 export interface GamesState {
@@ -11,6 +11,31 @@ export interface GamesState {
   hasMore: boolean;
   refresh: () => void;
   loadMore: () => void;
+}
+
+async function enrichGameCounts(games: GameSummary[], signal: AbortSignal): Promise<GameSummary[]> {
+  const enriched = [...games];
+  let nextIndex = 0;
+  const workerCount = Math.min(4, games.length);
+
+  const workers = Array.from({ length: workerCount }, async () => {
+    while (nextIndex < games.length && !signal.aborted) {
+      const index = nextIndex;
+      nextIndex += 1;
+      try {
+        const profile = await fetchGameProfilePage(games[index].id, signal);
+        const count = normalizeGameModCount(profile);
+        if (count !== undefined) {
+          enriched[index] = { ...games[index], submissionCount: count };
+        }
+      } catch (cause) {
+        if (signal.aborted) throw cause;
+      }
+    }
+  });
+
+  await Promise.all(workers);
+  return enriched;
 }
 
 export function useGames(filters: GameFilterState): GamesState {
@@ -47,10 +72,11 @@ export function useGames(filters: GameFilterState): GamesState {
           nameOperator: filters.nameOperator,
           signal: controller.signal,
         });
-        const normalized = records.flatMap((record) => {
+        const normalizedGames = records.flatMap((record) => {
           const game = normalizeGame(record);
           return game ? [game] : [];
         });
+        const normalized = await enrichGameCounts(normalizedGames, controller.signal);
         const reachedEnd = records.length < GAMES_PER_PAGE;
 
         setGames((current) => {

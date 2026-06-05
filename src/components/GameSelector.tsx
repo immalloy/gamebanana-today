@@ -119,7 +119,7 @@ export function GameSelector({ games, filters, loading, loadingMore, error, hasM
                   </span>
                   <span className="game-card__body">
                     <strong>{game.name}</strong>
-                    <span>{game.submissionCount === undefined ? 'Submissions unavailable' : `${game.submissionCount.toLocaleString()} submissions`}</span>
+                    <span>{game.submissionCount === undefined ? 'Open mods' : `${game.submissionCount.toLocaleString()} mods`}</span>
                   </span>
                 </button>
               </Frame>

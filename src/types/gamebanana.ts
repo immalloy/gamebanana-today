@@ -65,3 +65,17 @@ export interface GameBananaGameRecord {
     _aImages?: GameBananaImage[];
   };
 }
+
+export interface GameBananaGameRootCategory {
+  _idRow?: number | string;
+  _sName?: string;
+  _nItemCount?: number | string;
+  _nCategoryCount?: number | string;
+  _sUrl?: string;
+  _sIconUrl?: string;
+}
+
+export interface GameBananaGameProfileRecord extends GameBananaGameRecord {
+  _nSubscriberCount?: number | string;
+  _aModRootCategories?: GameBananaGameRootCategory[];
+}

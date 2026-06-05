@@ -1,4 +1,4 @@
-import type { GameBananaGameRecord, GameBananaImage } from '../types/gamebanana';
+import type { GameBananaGameProfileRecord, GameBananaGameRecord, GameBananaImage } from '../types/gamebanana';
 import type { GameSummary } from '../types/game';
 
 function imageUrl(image: GameBananaImage | undefined): string | undefined {
@@ -31,4 +31,10 @@ export function normalizeGame(record: GameBananaGameRecord): GameSummary | null 
     imageUrl: imageUrl(banner) || image,
     submissionCount: firstNumber(record._nSubmitCount, record._nSubmissionCount, record._nModCount),
   };
+}
+
+export function normalizeGameModCount(record: GameBananaGameProfileRecord): number | undefined {
+  const categories = Array.isArray(record._aModRootCategories) ? record._aModRootCategories : [];
+  const total = categories.reduce((sum, category) => sum + (Number(category._nItemCount) || 0), 0);
+  return total > 0 ? total : undefined;
 }

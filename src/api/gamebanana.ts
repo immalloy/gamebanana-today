@@ -1,4 +1,4 @@
-import type { GameBananaGameRecord, GameBananaModRecord } from '../types/gamebanana';
+import type { GameBananaGameProfileRecord, GameBananaGameRecord, GameBananaModRecord } from '../types/gamebanana';
 import { timestampToDate } from '../lib/date';
 import type { GameNameOperator, GameSortMode } from '../types/game';
 
@@ -99,6 +99,10 @@ export function buildGamePageUrl(options: Omit<FetchGamePageOptions, 'signal'>):
   return url.toString();
 }
 
+export function buildGameProfileUrl(gameId: number | string): string {
+  return `https://gamebanana.com/apiv11/Game/${encodeURIComponent(String(gameId))}/ProfilePage`;
+}
+
 export async function fetchGamePage(options: FetchGamePageOptions): Promise<GameBananaGameRecord[]> {
   const response = await fetch(buildGamePageUrl(options), {
     headers: { Accept: 'application/json' },
@@ -117,6 +121,19 @@ export async function fetchGamePage(options: FetchGamePageOptions): Promise<Game
   if (Array.isArray(object.items)) return object.items as GameBananaGameRecord[];
   if (Array.isArray(object.records)) return object.records as GameBananaGameRecord[];
   throw new Error('GameBanana response shape was not recognized');
+}
+
+export async function fetchGameProfilePage(gameId: number | string, signal?: AbortSignal): Promise<GameBananaGameProfileRecord> {
+  const response = await fetch(buildGameProfileUrl(gameId), {
+    headers: { Accept: 'application/json' },
+    signal,
+  });
+
+  if (!response.ok) {
+    throw new Error(`GameBanana returned ${response.status}`);
+  }
+
+  return readJsonResponse(response) as Promise<GameBananaGameProfileRecord>;
 }
 
 interface FetchRecentOptions {
