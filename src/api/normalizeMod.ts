@@ -27,6 +27,9 @@ export function normalizeMod(record: GameBananaModRecord): ModSummary | null {
   const files = Array.isArray(record._aFiles) ? record._aFiles : [];
   const description = stripHtml(record._sDescription) || stripHtml(files.find((file) => file._sDescription)?._sDescription);
   const version = files.find((file) => file._sVersion)?._sVersion;
+  const category = record._aCategory?._sName || 'Uncategorized';
+  const rootCategory = record._aRootCategory?._sName || 'Other';
+  const categoryPath = rootCategory === category ? category : `${rootCategory} > ${category}`;
 
   return {
     id,
@@ -36,8 +39,9 @@ export function normalizeMod(record: GameBananaModRecord): ModSummary | null {
     addedTimestamp: addedAt.getTime(),
     submitterName: record._aSubmitter?._sName || 'Unknown submitter',
     submitterUrl: record._aSubmitter?._sProfileUrl,
-    category: record._aCategory?._sName || 'Uncategorized',
-    rootCategory: record._aRootCategory?._sName || 'Other',
+    category,
+    rootCategory,
+    categoryPath,
     imageUrl: imageUrl(firstImage, '_sFile530'),
     thumbnailUrl: imageUrl(firstImage, '_sFile220'),
     description,

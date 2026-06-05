@@ -63,7 +63,7 @@ export function FilterSidebar({ filters, sortMode, search, rangeMode, categories
         <Dropdown options={sortOptions} value={sortMode} onChange={(value: SortMode) => onSortModeChange(value)} />
       </label>
       <label className="field">
-        <span>Category</span>
+        <span>Category path</span>
         <Dropdown options={toOptions(categories)} value={filters.category} onChange={(value: string) => update('category', value)} />
       </label>
       <div className="filter-actions">

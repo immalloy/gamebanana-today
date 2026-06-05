@@ -16,7 +16,7 @@ export function ModCard({ mod }: ModCardProps): JSX.Element {
         <h3>{mod.name}</h3>
         <p className="byline">by {mod.submitterName}</p>
         <p className="card-meta-line">
-          <span>{mod.category}</span>
+          <span>{mod.categoryPath}</span>
           <span>{new Intl.DateTimeFormat(undefined, { hour: 'numeric', minute: '2-digit' }).format(mod.addedAt)}</span>
         </p>
         <div className="stat-row">

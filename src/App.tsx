@@ -9,7 +9,7 @@ import { Results } from './components/Results';
 import { useGameMods } from './hooks/useGameMods';
 import { useGames } from './hooks/useGames';
 import { formatRange, rangeLabel as getRangeLabel } from './lib/date';
-import { applyFilters, getOptionValues, sortMods } from './lib/filterSort';
+import { applyFilters, getCategoryOptions, sortMods } from './lib/filterSort';
 import { selectHighlights } from './lib/highlights';
 import type { GameFilterState, GameSummary, RangeMode } from './types/game';
 import type { FilterState, SortMode } from './types/mod';
@@ -75,7 +75,7 @@ function GameModsView({ gameId, gameName, onBack }: { gameId: number; gameName: 
   const [filters, setFilters] = useState<FilterState>(defaultFilters);
   const [noDuplicateHighlights, setNoDuplicateHighlights] = useState(false);
 
-  const categories = useMemo(() => getOptionValues(mods, 'category'), [mods]);
+  const categories = useMemo(() => getCategoryOptions(mods), [mods]);
   const visibleMods = useMemo(() => sortMods(applyFilters(mods, search, filters), sortMode), [filters, mods, search, sortMode]);
   const highlights = useMemo(() => selectHighlights(mods, noDuplicateHighlights), [mods, noDuplicateHighlights]);
   const readableRange = getRangeLabel(rangeMode);

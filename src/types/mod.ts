@@ -14,6 +14,7 @@ export interface ModSummary {
   submitterUrl?: string;
   category: string;
   rootCategory: string;
+  categoryPath: string;
   imageUrl?: string;
   thumbnailUrl?: string;
   description: string;
