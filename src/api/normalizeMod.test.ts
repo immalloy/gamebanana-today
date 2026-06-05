@@ -13,7 +13,6 @@ describe('normalizeMod', () => {
       _aPreviewMedia: {
         _aImages: [{ _sBaseUrl: 'https://images.gamebanana.com/img/ss/mods', _sFile530: '530-test.jpg', _sFile220: '220-test.jpg' }],
       },
-      _sText: '<b>Hello</b><br>World',
       _nDownloadCount: 10,
       _nViewCount: 20,
       _nLikeCount: 3,
@@ -28,7 +27,6 @@ describe('normalizeMod', () => {
       rootCategory: 'Mod Folders',
       imageUrl: 'https://images.gamebanana.com/img/ss/mods/530-test.jpg',
       thumbnailUrl: 'https://images.gamebanana.com/img/ss/mods/220-test.jpg',
-      text: 'Hello World',
       version: '1.0',
     });
   });

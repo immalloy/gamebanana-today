@@ -1,11 +1,7 @@
-export type SortMode = 'newest' | 'oldest' | 'downloads' | 'views' | 'likes' | 'score';
-export type ViewMode = 'grid' | 'list';
+export type SortMode = 'newest' | 'oldest' | 'downloads' | 'views' | 'likes';
 
 export interface FilterState {
   category: string;
-  rootCategory: string;
-  onlyWithImages: boolean;
-  onlyWithDescription: boolean;
   compact: boolean;
 }
 
@@ -22,7 +18,6 @@ export interface ModSummary {
   imageUrl?: string;
   thumbnailUrl?: string;
   description: string;
-  text: string;
   downloads: number;
   views: number;
   likes: number;

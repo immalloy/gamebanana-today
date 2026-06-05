@@ -26,7 +26,6 @@ export function normalizeMod(record: GameBananaModRecord): ModSummary | null {
   const firstImage = record._aPreviewMedia?._aImages?.find((image) => Boolean(image._sBaseUrl && (image._sFile530 || image._sFile220 || image._sFile100 || image._sFile)));
   const files = Array.isArray(record._aFiles) ? record._aFiles : [];
   const description = stripHtml(record._sDescription) || stripHtml(files.find((file) => file._sDescription)?._sDescription);
-  const text = stripHtml(record._sText);
   const version = files.find((file) => file._sVersion)?._sVersion;
 
   return {
@@ -42,7 +41,6 @@ export function normalizeMod(record: GameBananaModRecord): ModSummary | null {
     imageUrl: imageUrl(firstImage, '_sFile530'),
     thumbnailUrl: imageUrl(firstImage, '_sFile220'),
     description,
-    text,
     downloads: Number(record._nDownloadCount) || 0,
     views: Number(record._nViewCount) || 0,
     likes: Number(record._nLikeCount) || 0,

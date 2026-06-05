@@ -2,7 +2,7 @@ import type { GameBananaModRecord } from '../types/gamebanana';
 import { timestampToDate } from '../lib/date';
 
 const GAME_ID = '8694';
-const PER_PAGE = 50;
+export const MODS_PER_PAGE = 50;
 const MAX_PAGES = 20;
 const PROPERTIES = [
   '_idRow',
@@ -16,7 +16,6 @@ const PROPERTIES = [
   '_nViewCount',
   '_nDownloadCount',
   '_sDescription',
-  '_sText',
   '_sProfileUrl',
   '_aFiles',
 ].join(',');
@@ -25,7 +24,7 @@ function buildUrl(page: number): string {
   const url = new URL('https://gamebanana.com/apiv7/Mod/ByGame');
   url.searchParams.append('_aGameRowIds[]', GAME_ID);
   url.searchParams.set('_nPage', String(page));
-  url.searchParams.set('_nPerpage', String(PER_PAGE));
+  url.searchParams.set('_nPerpage', String(MODS_PER_PAGE));
   url.searchParams.set('_csvProperties', PROPERTIES);
   return url.toString();
 }
@@ -68,7 +67,11 @@ export async function fetchRecentFunkinMods(options: FetchRecentOptions = {}): P
   for (let page = 1; page <= MAX_PAGES; page += 1) {
     const records = await fetchModPage(page, options.signal);
     all.push(...records);
-    if (records.length < PER_PAGE || (options.stopBefore && containsRecordBefore(records, options.stopBefore))) break;
+    if (records.length < MODS_PER_PAGE || (options.stopBefore && containsRecordBefore(records, options.stopBefore))) break;
   }
   return all;
+}
+
+export function pageHasOlderRecords(records: GameBananaModRecord[], stopBefore: Date): boolean {
+  return containsRecordBefore(records, stopBefore);
 }
