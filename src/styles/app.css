@@ -37,6 +37,10 @@ input {
   font: inherit;
 }
 
+button {
+  color: inherit;
+}
+
 a {
   color: inherit;
 }
@@ -76,27 +80,6 @@ a {
   white-space: nowrap;
 }
 
-.search-group {
-  width: min(42vw, 520px);
-  min-width: 220px;
-  position: relative;
-}
-
-.search-group input {
-  width: 100%;
-  padding-left: 32px;
-}
-
-.input-icon {
-  position: absolute;
-  left: 10px;
-  top: 50%;
-  transform: translateY(-50%);
-  z-index: 1;
-  color: var(--muted);
-  display: inline-flex;
-}
-
 .icon-button {
   min-width: 34px;
   min-height: 32px;
@@ -104,6 +87,133 @@ a {
   align-items: center;
   justify-content: center;
   padding: 0;
+}
+
+.selector-page {
+  width: 100%;
+  padding: 20px;
+}
+
+.selector-toolbar {
+  display: grid;
+  grid-template-columns: minmax(220px, 0.8fr) minmax(420px, 1.4fr);
+  gap: 18px;
+  align-items: end;
+  margin: 0 auto 18px;
+  max-width: 1320px;
+}
+
+.selector-toolbar h1,
+.game-title-section h1 {
+  margin: 0;
+  font-size: 28px;
+  line-height: 1.1;
+}
+
+.selector-toolbar p,
+.game-title-section p {
+  margin: 6px 0 0;
+  color: var(--muted);
+}
+
+.selector-filters {
+  display: grid;
+  grid-template-columns: minmax(180px, 1fr) minmax(130px, 0.55fr) minmax(160px, 0.7fr) auto;
+  gap: 12px;
+  align-items: end;
+  padding: 14px;
+  background: var(--panel-bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  box-shadow: var(--shadow);
+}
+
+.selector-actions,
+.filter-actions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.selector-actions {
+  padding-bottom: 1px;
+}
+
+.game-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+  gap: 14px;
+  max-width: 1320px;
+  margin: 0 auto;
+}
+
+.game-card {
+  overflow: hidden;
+  background: var(--panel-bg);
+  border-color: var(--border);
+  border-radius: 8px;
+  box-shadow: var(--shadow);
+}
+
+.game-card button {
+  width: 100%;
+  min-height: 100%;
+  display: grid;
+  grid-template-rows: 112px 1fr;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  text-align: left;
+  cursor: pointer;
+}
+
+.game-card button:hover strong,
+.game-card button:focus-visible strong {
+  color: var(--accent);
+}
+
+.game-card button:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: -2px;
+}
+
+.game-card__media,
+.game-card__media img,
+.game-card__placeholder {
+  width: 100%;
+  height: 112px;
+}
+
+.game-card__media img {
+  object-fit: cover;
+  display: block;
+}
+
+.game-card__placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #3584e4, #2ec27e);
+  color: #ffffff;
+  font-size: 28px;
+  font-weight: 800;
+}
+
+.game-card__body {
+  display: grid;
+  gap: 6px;
+  padding: 12px;
+}
+
+.game-card__body strong {
+  font-size: 16px;
+  line-height: 1.2;
+  overflow-wrap: anywhere;
+}
+
+.game-card__body span {
+  color: var(--muted);
+  font-size: 13px;
 }
 
 .app-shell {
@@ -155,11 +265,54 @@ a {
   width: 100%;
 }
 
+.segmented {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 4px;
+  padding: 3px;
+  margin-top: 14px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--panel-bg);
+}
+
+.segmented button {
+  min-height: 32px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+  font-weight: 700;
+}
+
+.segmented button.active {
+  background: var(--accent);
+  color: #ffffff;
+}
+
+.filter-actions {
+  margin-top: 16px;
+}
+
 .content {
   min-width: 0;
   width: 100%;
   padding: 18px;
   overflow: visible;
+}
+
+.game-title-section {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding-bottom: 2px;
+}
+
+.back-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
 }
 
 .section + .section {
@@ -395,10 +548,21 @@ a {
     min-width: 0;
   }
 
-  .search-group {
-    order: 10;
-    width: 100%;
-    min-width: 0;
+  .selector-page {
+    padding: 14px;
+  }
+
+  .selector-toolbar,
+  .selector-filters {
+    grid-template-columns: 1fr;
+  }
+
+  .selector-toolbar {
+    gap: 12px;
+  }
+
+  .selector-actions {
+    justify-content: flex-start;
   }
 
   .app-shell {
@@ -433,7 +597,8 @@ a {
   }
 
   .highlight-grid,
-  .results-grid {
+  .results-grid,
+  .game-grid {
     grid-template-columns: 1fr;
   }
 
