@@ -1,4 +1,5 @@
 import type { GameBananaModRecord } from '../types/gamebanana';
+import { timestampToDate } from '../lib/date';
 
 const GAME_ID = '8694';
 const PER_PAGE = 50;
@@ -50,12 +51,24 @@ export async function fetchModPage(page: number, signal?: AbortSignal): Promise<
   throw new Error('GameBanana response shape was not recognized');
 }
 
-export async function fetchRecentFunkinMods(signal?: AbortSignal): Promise<GameBananaModRecord[]> {
+interface FetchRecentOptions {
+  signal?: AbortSignal;
+  stopBefore?: Date;
+}
+
+function containsRecordBefore(records: GameBananaModRecord[], stopBefore: Date): boolean {
+  return records.some((record) => {
+    const addedAt = timestampToDate(record._tsDateAdded);
+    return Boolean(addedAt && addedAt.getTime() < stopBefore.getTime());
+  });
+}
+
+export async function fetchRecentFunkinMods(options: FetchRecentOptions = {}): Promise<GameBananaModRecord[]> {
   const all: GameBananaModRecord[] = [];
   for (let page = 1; page <= MAX_PAGES; page += 1) {
-    const records = await fetchModPage(page, signal);
+    const records = await fetchModPage(page, options.signal);
     all.push(...records);
-    if (records.length < PER_PAGE) break;
+    if (records.length < PER_PAGE || (options.stopBefore && containsRecordBefore(records, options.stopBefore))) break;
   }
   return all;
 }

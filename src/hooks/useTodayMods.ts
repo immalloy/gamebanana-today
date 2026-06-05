@@ -31,7 +31,7 @@ export function useTodayMods(): TodayModsState {
       setLoading(true);
       setError(null);
       try {
-        const records = await fetchRecentFunkinMods(controller.signal);
+        const records = await fetchRecentFunkinMods({ signal: controller.signal, stopBefore: dayRange.start });
         const normalized = records.flatMap((record) => {
           const mod = normalizeMod(record);
           return mod ? [mod] : [];
@@ -56,7 +56,7 @@ export function useTodayMods(): TodayModsState {
       ignore = true;
       controller.abort();
     };
-  }, [dayRange.end, dayRange.start, refreshToken]);
+  }, [dayRange.end, dayRange.start]);
 
   const refresh = useCallback(() => setRefreshToken((value) => value + 1), []);
 
