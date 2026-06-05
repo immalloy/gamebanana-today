@@ -33,6 +33,20 @@ const GAME_PROPERTIES = [
   '_aPreviewMedia',
 ].join(',');
 
+async function readJsonResponse(response: Response): Promise<unknown> {
+  const contentType = response.headers.get('content-type') || '';
+  const text = await response.text();
+  try {
+    return JSON.parse(text);
+  } catch {
+    throw new Error(`Expected JSON from GameBanana, received ${contentType || 'unknown content type'}`);
+  }
+}
+
+function asRecord(value: unknown): Record<string, unknown> {
+  return value && typeof value === 'object' ? value as Record<string, unknown> : {};
+}
+
 export function buildModPageUrl(gameId: number | string, page: number): string {
   const url = new URL('https://gamebanana.com/apiv7/Mod/ByGame');
   url.searchParams.append('_aGameRowIds[]', String(gameId));
@@ -48,18 +62,15 @@ export async function fetchModPage(gameId: number | string, page: number, signal
     signal,
   });
 
-  const contentType = response.headers.get('content-type') || '';
   if (!response.ok) {
     throw new Error(`GameBanana returned ${response.status}`);
   }
-  if (!contentType.includes('application/json')) {
-    throw new Error(`Expected JSON from GameBanana, received ${contentType || 'unknown content type'}`);
-  }
 
-  const json = await response.json();
+  const json = await readJsonResponse(response);
+  const object = asRecord(json);
   if (Array.isArray(json)) return json as GameBananaModRecord[];
-  if (Array.isArray(json?.data)) return json.data as GameBananaModRecord[];
-  if (Array.isArray(json?.items)) return json.items as GameBananaModRecord[];
+  if (Array.isArray(object.data)) return object.data as GameBananaModRecord[];
+  if (Array.isArray(object.items)) return object.items as GameBananaModRecord[];
   throw new Error('GameBanana response shape was not recognized');
 }
 
@@ -94,20 +105,17 @@ export async function fetchGamePage(options: FetchGamePageOptions): Promise<Game
     signal: options.signal,
   });
 
-  const contentType = response.headers.get('content-type') || '';
   if (!response.ok) {
     throw new Error(`GameBanana returned ${response.status}`);
   }
-  if (!contentType.includes('application/json')) {
-    throw new Error(`Expected JSON from GameBanana, received ${contentType || 'unknown content type'}`);
-  }
 
-  const json = await response.json();
+  const json = await readJsonResponse(response);
+  const object = asRecord(json);
   if (Array.isArray(json)) return json as GameBananaGameRecord[];
-  if (Array.isArray(json?._aRecords)) return json._aRecords as GameBananaGameRecord[];
-  if (Array.isArray(json?.data)) return json.data as GameBananaGameRecord[];
-  if (Array.isArray(json?.items)) return json.items as GameBananaGameRecord[];
-  if (Array.isArray(json?.records)) return json.records as GameBananaGameRecord[];
+  if (Array.isArray(object._aRecords)) return object._aRecords as GameBananaGameRecord[];
+  if (Array.isArray(object.data)) return object.data as GameBananaGameRecord[];
+  if (Array.isArray(object.items)) return object.items as GameBananaGameRecord[];
+  if (Array.isArray(object.records)) return object.records as GameBananaGameRecord[];
   throw new Error('GameBanana response shape was not recognized');
 }
 

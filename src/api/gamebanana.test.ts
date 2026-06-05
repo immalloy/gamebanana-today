@@ -1,5 +1,10 @@
-import { describe, expect, it } from 'vitest';
-import { buildGamePageUrl, buildModPageUrl } from './gamebanana';
+import { afterEach, describe, expect, it, vi } from 'vitest';
+import { buildGamePageUrl, buildModPageUrl, fetchGamePage } from './gamebanana';
+
+afterEach(() => {
+  vi.restoreAllMocks();
+  vi.unstubAllGlobals();
+});
 
 describe('GameBanana URL builders', () => {
   it('builds mod URLs with arbitrary selected game ids', () => {
@@ -19,5 +24,17 @@ describe('GameBanana URL builders', () => {
     expect(url.searchParams.get('_sSort')).toBe('Game_MostSubmissions');
     expect(url.searchParams.get('_sName')).toBe('funkin');
     expect(url.searchParams.get('_sNameOperator')).toBe('contains');
+  });
+
+  it('accepts JSON bodies mislabeled as text/html', async () => {
+    vi.stubGlobal(
+      'fetch',
+      vi.fn(async () => new Response(JSON.stringify({ _aRecords: [{ _idRow: 8694, _sName: 'Friday Night Funkin' }] }), {
+        status: 200,
+        headers: { 'content-type': 'text/html; charset=UTF-8' },
+      })),
+    );
+
+    await expect(fetchGamePage({ page: 1 })).resolves.toEqual([{ _idRow: 8694, _sName: 'Friday Night Funkin' }]);
   });
 });
