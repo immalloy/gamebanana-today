@@ -1,23 +1,29 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { fetchModPage, MODS_PER_PAGE, pageHasOlderRecords } from '../api/gamebanana';
 import { normalizeMod } from '../api/normalizeMod';
-import { getLocalDayRange, isWithinRange } from '../lib/date';
+import { getLocalRange, isWithinRange } from '../lib/date';
+import type { RangeMode } from '../types/game';
 import type { ModSummary } from '../types/mod';
 
-export interface TodayModsState {
+interface UseGameModsOptions {
+  gameId: number;
+  rangeMode: RangeMode;
+}
+
+export interface GameModsState {
   mods: ModSummary[];
   allLoadedCount: number;
   loading: boolean;
   loadingMore: boolean;
   error: string | null;
   refreshedAt: Date | null;
-  dayRange: { start: Date; end: Date };
+  range: { start: Date; end: Date };
   hasMore: boolean;
   refresh: () => void;
   loadMore: () => void;
 }
 
-export function useTodayMods(): TodayModsState {
+export function useGameMods({ gameId, rangeMode }: UseGameModsOptions): GameModsState {
   const [mods, setMods] = useState<ModSummary[]>([]);
   const [allLoadedCount, setAllLoadedCount] = useState(0);
   const [loading, setLoading] = useState(true);
@@ -25,7 +31,7 @@ export function useTodayMods(): TodayModsState {
   const [error, setError] = useState<string | null>(null);
   const [refreshedAt, setRefreshedAt] = useState<Date | null>(null);
   const [refreshToken, setRefreshToken] = useState(0);
-  const dayRange = useMemo(() => getLocalDayRange(), [refreshToken]);
+  const range = useMemo(() => getLocalRange(rangeMode), [rangeMode, refreshToken]);
   const nextPageRef = useRef(1);
   const hasMoreRef = useRef(true);
   const loadingRef = useRef(false);
@@ -46,18 +52,18 @@ export function useTodayMods(): TodayModsState {
 
       try {
         const page = reset ? 1 : nextPageRef.current;
-        const records = await fetchModPage(page, controller.signal);
+        const records = await fetchModPage(gameId, page, controller.signal);
         const normalized = records.flatMap((record) => {
           const mod = normalizeMod(record);
           return mod ? [mod] : [];
         });
-        const today = normalized.filter((mod) => isWithinRange(mod.addedAt, dayRange.start, dayRange.end));
-        const reachedEnd = records.length < MODS_PER_PAGE || pageHasOlderRecords(records, dayRange.start);
+        const inRange = normalized.filter((mod) => isWithinRange(mod.addedAt, range.start, range.end));
+        const reachedEnd = records.length < MODS_PER_PAGE || pageHasOlderRecords(records, range.start);
 
         setMods((current) => {
-          if (reset) return today;
+          if (reset) return inRange;
           const existingIds = new Set(current.map((mod) => mod.id));
-          return [...current, ...today.filter((mod) => !existingIds.has(mod.id))];
+          return [...current, ...inRange.filter((mod) => !existingIds.has(mod.id))];
         });
         setAllLoadedCount((current) => (reset ? normalized.length : current + normalized.length));
         setRefreshedAt(new Date());
@@ -74,7 +80,7 @@ export function useTodayMods(): TodayModsState {
         setLoadingMore(false);
       }
     },
-    [dayRange.end, dayRange.start],
+    [gameId, range.end, range.start],
   );
 
   useEffect(() => {
@@ -89,9 +95,7 @@ export function useTodayMods(): TodayModsState {
   }, [loadPage]);
 
   const refresh = useCallback(() => setRefreshToken((value) => value + 1), []);
-  const loadMore = useCallback(() => {
-    loadPage(false);
-  }, [loadPage]);
+  const loadMore = useCallback(() => loadPage(false), [loadPage]);
 
-  return { mods, allLoadedCount, loading, loadingMore, error, refreshedAt, dayRange, hasMore, refresh, loadMore };
+  return { mods, allLoadedCount, loading, loadingMore, error, refreshedAt, range, hasMore, refresh, loadMore };
 }
