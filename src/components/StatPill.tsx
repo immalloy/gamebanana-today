@@ -1,10 +1,9 @@
-import { Heart, Eye, Download, Trophy } from 'lucide-react';
+import { Heart, Eye, Download } from 'lucide-react';
 
 const icons = {
   downloads: Download,
   views: Eye,
   likes: Heart,
-  score: Trophy,
 };
 
 interface StatPillProps {

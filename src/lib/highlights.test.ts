@@ -13,7 +13,6 @@ function mod(id: number, overrides: Partial<ModSummary>): ModSummary {
     category: 'Other/Misc',
     rootCategory: 'Mod Folders',
     description: '',
-    text: '',
     downloads: 0,
     views: 0,
     likes: 0,
@@ -38,7 +37,7 @@ describe('selectHighlights', () => {
   it('allows duplicates when there are fewer mods than slots', () => {
     const highlights = selectHighlights([mod(1, { downloads: 5 })]);
 
-    expect(highlights).toHaveLength(5);
+    expect(highlights).toHaveLength(3);
     expect(new Set(highlights.map((highlight) => highlight.mod.id))).toEqual(new Set([1]));
   });
 });

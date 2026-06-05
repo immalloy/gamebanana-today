@@ -1,7 +1,6 @@
 import { ExternalLink } from 'lucide-react';
 import { Frame } from 'web-toolkit';
 import type { ModSummary } from '../types/mod';
-import { getLocalScore } from '../lib/filterSort';
 import { StatPill } from './StatPill';
 
 interface ModCardProps {
@@ -10,7 +9,7 @@ interface ModCardProps {
 }
 
 export function ModCard({ mod, compact }: ModCardProps): JSX.Element {
-  const summary = mod.description || mod.text || 'No description provided.';
+  const summary = mod.description || 'No description provided.';
 
   return (
     <Frame className={`mod-card ${compact ? 'compact' : ''}`}>
@@ -29,7 +28,6 @@ export function ModCard({ mod, compact }: ModCardProps): JSX.Element {
           <StatPill type="downloads" value={mod.downloads} label="Downloads" />
           <StatPill type="views" value={mod.views} label="Views" />
           <StatPill type="likes" value={mod.likes} label="Likes" />
-          <StatPill type="score" value={getLocalScore(mod)} label="Local score" />
         </div>
         <div className="card-actions">
           <span>{mod.category}</span>

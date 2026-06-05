@@ -1,5 +1,4 @@
 import type { ModSummary } from '../types/mod';
-import { getLocalScore } from './filterSort';
 
 export interface Highlight {
   id: string;
@@ -29,11 +28,5 @@ export function selectHighlights(mods: ModSummary[]): Highlight[] {
     choose('Most downloaded', 'downloads', (mod) => `${mod.downloads.toLocaleString()} downloads`, (a, b) => b.downloads - a.downloads || b.addedTimestamp - a.addedTimestamp),
     choose('Most liked', 'likes', (mod) => `${mod.likes.toLocaleString()} likes`, (a, b) => b.likes - a.likes || b.addedTimestamp - a.addedTimestamp),
     choose('Most viewed', 'views', (mod) => `${mod.views.toLocaleString()} views`, (a, b) => b.views - a.views || b.addedTimestamp - a.addedTimestamp),
-    choose('Best local score', 'score', (mod) => `${getLocalScore(mod).toLocaleString()} score`, (a, b) => getLocalScore(b) - getLocalScore(a) || b.addedTimestamp - a.addedTimestamp),
-    choose('Newest standout', 'standout', (mod) => new Intl.DateTimeFormat(undefined, { hour: 'numeric', minute: '2-digit' }).format(mod.addedAt), (a, b) => {
-      const aBoost = (a.imageUrl ? 1_000_000 : 0) + getLocalScore(a);
-      const bBoost = (b.imageUrl ? 1_000_000 : 0) + getLocalScore(b);
-      return bBoost - aBoost || b.addedTimestamp - a.addedTimestamp;
-    }),
   ].filter((highlight): highlight is Highlight => Boolean(highlight));
 }
