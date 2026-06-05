@@ -1,7 +1,7 @@
 {
-  "name": "funkin-today",
+  "name": "gamebanana-today",
   "version": "1.0.0",
-  "description": "Browse Friday Night Funkin' GameBanana mods released today.",
+  "description": "Browse daily GameBanana mods by game.",
   "private": true,
   "main": "index.js",
   "scripts": {
@@ -12,16 +12,16 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/immalloy/funkin-today.git"
+    "url": "git+https://github.com/immalloy/gamebanana-today.git"
   },
   "keywords": [],
   "author": "",
   "license": "MIT",
   "type": "module",
   "bugs": {
-    "url": "https://github.com/immalloy/funkin-today/issues"
+    "url": "https://github.com/immalloy/gamebanana-today/issues"
   },
-  "homepage": "https://github.com/immalloy/funkin-today#readme",
+  "homepage": "https://github.com/immalloy/gamebanana-today#readme",
   "dependencies": {
     "@vitejs/plugin-react": "^6.0.2",
     "lucide-react": "^1.17.0",
