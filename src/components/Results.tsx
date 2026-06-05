@@ -5,6 +5,8 @@ import { ModCard } from './ModCard';
 
 interface ResultsProps {
   mods: ModSummary[];
+  gameName: string;
+  rangeLabel: string;
   loading: boolean;
   loadingMore: boolean;
   error: string | null;
@@ -14,7 +16,7 @@ interface ResultsProps {
   onLoadMore: () => void;
 }
 
-export function Results({ mods, loading, loadingMore, error, hasLoadedMods, hasMore, onRetry, onLoadMore }: ResultsProps): JSX.Element {
+export function Results({ mods, gameName, rangeLabel, loading, loadingMore, error, hasLoadedMods, hasMore, onRetry, onLoadMore }: ResultsProps): JSX.Element {
   const sentinelRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
@@ -41,7 +43,7 @@ export function Results({ mods, loading, loadingMore, error, hasLoadedMods, hasM
       ) : hasMore ? (
         <Button onClick={onLoadMore}>Load more</Button>
       ) : (
-        <span>End of today</span>
+        <span>End of {rangeLabel.toLowerCase()} mods for {gameName}</span>
       )}
     </div>
   );
@@ -50,8 +52,8 @@ export function Results({ mods, loading, loadingMore, error, hasLoadedMods, hasM
     return (
       <Frame className="state-panel">
         <Spinner />
-        <h2>Loading today's FNF mods</h2>
-        <p>Fetching current GameBanana pages for Friday Night Funkin'.</p>
+        <h2>Loading {rangeLabel.toLowerCase()} mods for {gameName}</h2>
+        <p>Fetching current GameBanana mod pages for this game.</p>
       </Frame>
     );
   }
@@ -69,8 +71,8 @@ export function Results({ mods, loading, loadingMore, error, hasLoadedMods, hasM
   if (!hasLoadedMods) {
     return (
       <Frame className="state-panel">
-        <h2>No FNF mods found for today</h2>
-        <p>GameBanana did not return releases inside your current local calendar day.</p>
+        <h2>No {rangeLabel.toLowerCase()} mods found for {gameName}</h2>
+        <p>GameBanana did not return releases inside the selected local range.</p>
         <Button onClick={onRetry}>Refresh</Button>
       </Frame>
     );

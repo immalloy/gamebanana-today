@@ -10,7 +10,7 @@ export function ModCard({ mod }: ModCardProps): JSX.Element {
   return (
     <Frame className="mod-card">
       <a className="mod-card__media" href={mod.url} target="_blank" rel="noreferrer" aria-label={`Open ${mod.name}`}>
-        {mod.imageUrl ? <img src={mod.imageUrl} alt="" loading="lazy" /> : <div className="mod-card__placeholder">FNF</div>}
+        {mod.imageUrl ? <img src={mod.imageUrl} alt="" loading="lazy" /> : <div className="mod-card__placeholder">MOD</div>}
       </a>
       <div className="mod-card__body">
         <h3>{mod.name}</h3>
