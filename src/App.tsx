@@ -6,6 +6,7 @@ import { FilterSidebar } from './components/FilterSidebar';
 import { GameSelector } from './components/GameSelector';
 import { Highlights } from './components/Highlights';
 import { Results } from './components/Results';
+import { Watermark } from './components/Watermark';
 import { fetchGameProfilePage } from './api/gamebanana';
 import { normalizeGame } from './api/normalizeGame';
 import { useGameMods } from './hooks/useGameMods';
@@ -100,6 +101,7 @@ function GameSelectorView({ onSelectGame }: { onSelectGame: (game: GameSummary) 
         onRetry={refresh}
         onSelectGame={onSelectGame}
       />
+      <Watermark />
     </>
   );
 }
@@ -199,6 +201,7 @@ function GameModsView({ gameId, gameName, gameImage, onBack }: { gameId: number;
             onLoadMore={loadMore}
           />
         </section>
+        <Watermark />
       </main>
       </div>
     </>

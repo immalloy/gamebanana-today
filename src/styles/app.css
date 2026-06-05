@@ -530,6 +530,28 @@ a {
   border-left: 4px solid var(--danger);
 }
 
+.watermark {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 6px 12px;
+  width: 100%;
+  padding: 18px 12px 24px;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.watermark a {
+  color: var(--accent);
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.watermark a:hover,
+.watermark a:focus-visible {
+  text-decoration: underline;
+}
+
 @media (max-width: 1100px) {
   .highlight-grid {
     grid-template-columns: repeat(2, minmax(180px, 1fr));
