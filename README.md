@@ -1,8 +1,16 @@
-# GameBanana Today
+<p align="center">
+  <img src="./public/brand/gamebanana-daily-icon.png" alt="GameBanana Today icon" width="96">
+</p>
 
-Browse daily, weekly, and monthly GameBanana mods by game.
+<h1 align="center">GameBanana Today</h1>
 
-Live site: https://immalloy.github.io/gamebanana-today/
+<p align="center">
+  Browse daily, weekly, and monthly GameBanana mods by game.
+</p>
+
+<p align="center">
+  <a href="https://immalloy.github.io/gamebanana-today/">Live Site</a>
+</p>
 
 ![Game selector](docs/images/game-selector.png)
 
@@ -10,12 +18,20 @@ Live site: https://immalloy.github.io/gamebanana-today/
 
 ## What It Does
 
-- Shows a searchable GameBanana game grid.
-- Opens a game-specific mods feed.
-- Supports Daily, Weekly, and Monthly ranges.
-- Filters loaded mods by name, category, and sort mode.
-- Highlights the most downloaded, liked, and viewed mods.
-- Uses short shareable URLs like `?game=8694`.
+GameBanana Today is a simple browser for finding GameBanana mods released across daily, weekly, and monthly ranges.
+
+It lets you pick a game, browse its recent mods, filter by category, and quickly see the most downloaded, liked, and viewed mods for that range.
+
+## Features
+
+- Searchable GameBanana games page.
+- Game mod feeds.
+- Daily, weekly, and monthly ranges.
+- Search by mod name.
+- Filter by category.
+- Sort loaded mods.
+- Highlights for most downloaded, most liked, and most viewed mods on the said ranges.
+- Shareable URLs for each game.
 
 ## Dependencies
 
@@ -24,10 +40,13 @@ Live site: https://immalloy.github.io/gamebanana-today/
 - TypeScript
 - lucide-react
 - web-toolkit
+- etc 
 
 ## Sources
 
 - Game data and mod data: https://gamebanana.com/
 - GameBanana API docs: https://github.com/GameBanana/GamebananaAPI-Docs
+
+## Author
 
 Made by Malloy: https://malloy.vercel.app/
