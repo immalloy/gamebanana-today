@@ -1,5 +1,6 @@
 import { Frame } from 'web-toolkit';
 import type { Highlight } from '../lib/highlights';
+import { StatPill } from './StatPill';
 
 interface HighlightsProps {
   highlights: Highlight[];
@@ -21,7 +22,12 @@ export function Highlights({ highlights }: HighlightsProps): JSX.Element | null 
               <div>
                 <span>{highlight.label}</span>
                 <strong>{highlight.mod.name}</strong>
-                <em>{highlight.value}</em>
+                <em>by {highlight.mod.submitterName}</em>
+                <div className="highlight-stats">
+                  <StatPill type="downloads" value={highlight.mod.downloads} label="Downloads" />
+                  <StatPill type="views" value={highlight.mod.views} label="Views" />
+                  <StatPill type="likes" value={highlight.mod.likes} label="Likes" />
+                </div>
               </div>
             </a>
           </Frame>

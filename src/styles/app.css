@@ -231,6 +231,13 @@ a {
   gap: 5px;
 }
 
+.highlight-card .highlight-stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding: 4px 0 0;
+}
+
 .highlight-card span {
   color: var(--accent);
   font-size: 12px;
