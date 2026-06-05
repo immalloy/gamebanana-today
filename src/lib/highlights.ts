@@ -10,12 +10,15 @@ function pickBest(candidates: ModSummary[], compare: (a: ModSummary, b: ModSumma
   return [...candidates].sort(compare)[0];
 }
 
-export function selectHighlights(mods: ModSummary[]): Highlight[] {
+export function selectHighlights(mods: ModSummary[], noDuplicates = false): Highlight[] {
   if (mods.length === 0) return [];
 
+  const used = new Set<number>();
   const choose = (label: string, id: string, compare: (a: ModSummary, b: ModSummary) => number): Highlight | null => {
-    const mod = pickBest(mods, compare);
+    const pool = noDuplicates ? mods.filter((mod) => !used.has(mod.id)) : mods;
+    const mod = pickBest(pool.length ? pool : mods, compare);
     if (!mod) return null;
+    used.add(mod.id);
     return { id, label, mod };
   };
 

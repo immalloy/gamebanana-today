@@ -181,6 +181,15 @@ a {
   gap: 12px;
 }
 
+.highlight-toggle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 600;
+}
+
 .highlight-card,
 .mod-card,
 .state-panel {

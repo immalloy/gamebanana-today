@@ -19,10 +19,11 @@ function App(): JSX.Element {
   const [search, setSearch] = useState('');
   const [sortMode, setSortMode] = useState<SortMode>('newest');
   const [filters, setFilters] = useState<FilterState>(defaultFilters);
+  const [noDuplicateHighlights, setNoDuplicateHighlights] = useState(false);
 
   const categories = useMemo(() => getOptionValues(mods, 'category'), [mods]);
   const visibleMods = useMemo(() => sortMods(applyFilters(mods, search, filters), sortMode), [filters, mods, search, sortMode]);
-  const highlights = useMemo(() => selectHighlights(mods), [mods]);
+  const highlights = useMemo(() => selectHighlights(mods, noDuplicateHighlights), [mods, noDuplicateHighlights]);
 
   const activeSummary = [
     search.trim() ? `search "${search.trim()}"` : '',
@@ -52,7 +53,7 @@ function App(): JSX.Element {
           }}
         />
         <main className="content">
-          <Highlights highlights={highlights} />
+          <Highlights highlights={highlights} noDuplicates={noDuplicateHighlights} onNoDuplicatesChange={setNoDuplicateHighlights} />
           <section className="section">
             <div className="section-heading">
               <div>
