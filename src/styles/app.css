@@ -64,10 +64,25 @@ a {
   min-width: 0;
 }
 
+.brand-title {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  min-width: 0;
+  margin-right: auto;
+}
+
+.brand-title img {
+  width: 28px;
+  height: 28px;
+  flex: 0 0 auto;
+  image-rendering: pixelated;
+  opacity: 0.78;
+}
+
 .HeaderBar__title {
   min-width: 150px;
   max-width: 260px;
-  margin-right: auto;
   text-align: left;
   align-items: flex-start;
 }

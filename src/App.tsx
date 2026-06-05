@@ -27,6 +27,7 @@ const defaultGameFilters: GameFilterState = {
   sort: 'Game_MostSubmissions',
 };
 const appBasePath = import.meta.env.BASE_URL || '/';
+const defaultBrandImage = `${window.location.origin}${appBasePath}brand/gamebanana-daily-icon.png`;
 
 interface RouteState {
   gameId: number | null;
@@ -84,7 +85,7 @@ function usePageMeta(title: string, description: string, image?: string): void {
 function GameSelectorView({ onSelectGame }: { onSelectGame: (game: GameSummary) => void }): JSX.Element {
   const [filters, setFilters] = useState(defaultGameFilters);
   const { games, loading, loadingMore, error, hasMore, refresh, loadMore } = useGames(filters);
-  usePageMeta('GameBanana Daily', 'Daily GameBanana mods by game.');
+  usePageMeta('GameBanana Daily', 'Daily GameBanana mods by game.', defaultBrandImage);
 
   return (
     <>
