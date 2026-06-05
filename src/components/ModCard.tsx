@@ -4,12 +4,11 @@ import { StatPill } from './StatPill';
 
 interface ModCardProps {
   mod: ModSummary;
-  compact: boolean;
 }
 
-export function ModCard({ mod, compact }: ModCardProps): JSX.Element {
+export function ModCard({ mod }: ModCardProps): JSX.Element {
   return (
-    <Frame className={`mod-card ${compact ? 'compact' : ''}`}>
+    <Frame className="mod-card">
       <a className="mod-card__media" href={mod.url} target="_blank" rel="noreferrer" aria-label={`Open ${mod.name}`}>
         {mod.imageUrl ? <img src={mod.imageUrl} alt="" loading="lazy" /> : <div className="mod-card__placeholder">FNF</div>}
       </a>

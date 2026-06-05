@@ -11,7 +11,6 @@ import type { FilterState, SortMode } from './types/mod';
 
 const defaultFilters: FilterState = {
   category: 'all',
-  compact: false,
 };
 
 function App(): JSX.Element {
@@ -68,7 +67,6 @@ function App(): JSX.Element {
               error={error}
               hasLoadedMods={mods.length > 0}
               hasMore={hasMore}
-              compact={filters.compact}
               onRetry={refresh}
               onLoadMore={loadMore}
             />

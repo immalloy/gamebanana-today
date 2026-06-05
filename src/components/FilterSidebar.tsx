@@ -1,5 +1,5 @@
 import { RotateCcw } from 'lucide-react';
-import { Button, Dropdown, Switch } from 'web-toolkit';
+import { Button, Dropdown } from 'web-toolkit';
 import type { FilterState, SortMode } from '../types/mod';
 
 interface FilterSidebarProps {
@@ -42,10 +42,6 @@ export function FilterSidebar({ filters, sortMode, categories, onFiltersChange, 
         <span>Category</span>
         <Dropdown options={toOptions(categories)} value={filters.category} onChange={(value: string) => update('category', value)} />
       </label>
-      <div className="switch-row">
-        <span>Compact results</span>
-        <Switch value={filters.compact} onChange={(value: boolean) => update('compact', value)} label="Compact results" />
-      </div>
     </aside>
   );
 }

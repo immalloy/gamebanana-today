@@ -23,6 +23,7 @@ body {
   margin: 0;
   background: var(--app-bg);
   color: var(--text);
+  overflow-x: hidden;
 }
 
 html,
@@ -56,13 +57,23 @@ a {
 
 .app-header > .Box {
   gap: 12px;
+  min-width: 0;
 }
 
 .HeaderBar__title {
   min-width: 150px;
+  max-width: 260px;
   margin-right: auto;
   text-align: left;
   align-items: flex-start;
+}
+
+.HeaderBar__title .title,
+.HeaderBar__title .subtitle {
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .search-group {
@@ -95,12 +106,6 @@ a {
   padding: 0;
 }
 
-.switch-row {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
 .app-shell {
   display: grid;
   grid-template-columns: 282px minmax(0, 1fr);
@@ -114,6 +119,9 @@ a {
   border-right: 1px solid var(--border);
   background: var(--panel-strong);
   overflow: auto;
+  position: sticky;
+  top: 47px;
+  max-height: calc(100vh - 47px);
 }
 
 .sidebar-title,
@@ -137,8 +145,7 @@ a {
   margin-top: 16px;
 }
 
-.field > span,
-.switch-row > span {
+.field > span {
   color: var(--muted);
   font-size: 13px;
   font-weight: 600;
@@ -146,11 +153,6 @@ a {
 
 .field .Dropdown {
   width: 100%;
-}
-
-.switch-row {
-  justify-content: space-between;
-  margin-top: 18px;
 }
 
 .content {
@@ -166,6 +168,7 @@ a {
 
 .section-heading {
   margin-bottom: 12px;
+  flex-wrap: wrap;
 }
 
 .section-heading p,
@@ -269,7 +272,7 @@ a {
 
 .results-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(245px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
   gap: 14px;
 }
 
@@ -324,6 +327,7 @@ a {
   gap: 6px;
   margin-top: 4px;
   font-size: 12px;
+  overflow-wrap: anywhere;
 }
 
 .card-meta-line span + span::before {
@@ -385,9 +389,16 @@ a {
     flex-wrap: wrap;
   }
 
+  .HeaderBar__title {
+    flex: 1 1 calc(100% - 48px);
+    max-width: none;
+    min-width: 0;
+  }
+
   .search-group {
     order: 10;
     width: 100%;
+    min-width: 0;
   }
 
   .app-shell {
@@ -397,8 +408,24 @@ a {
   .sidebar {
     width: 100%;
     min-height: auto;
+    max-height: none;
+    position: static;
     border-right: 0;
     border-bottom: 1px solid var(--border);
+  }
+
+  .sidebar {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .sidebar-title {
+    margin-bottom: 0;
+  }
+
+  .field {
+    margin-top: 0;
   }
 
   .content {
@@ -410,4 +437,26 @@ a {
     grid-template-columns: 1fr;
   }
 
+}
+
+@media (max-width: 420px) {
+  .content,
+  .sidebar {
+    padding: 10px;
+  }
+
+  .highlight-card a {
+    grid-template-rows: 96px 1fr;
+    min-height: 188px;
+  }
+
+  .highlight-card img,
+  .highlight-placeholder {
+    height: 96px;
+  }
+
+  .mod-card__body,
+  .highlight-card div {
+    padding: 10px;
+  }
 }

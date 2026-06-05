@@ -2,7 +2,6 @@ export type SortMode = 'newest' | 'oldest' | 'downloads' | 'views' | 'likes';
 
 export interface FilterState {
   category: string;
-  compact: boolean;
 }
 
 export interface ModSummary {

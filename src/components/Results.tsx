@@ -10,17 +10,17 @@ interface ResultsProps {
   error: string | null;
   hasLoadedMods: boolean;
   hasMore: boolean;
-  compact: boolean;
   onRetry: () => void;
   onLoadMore: () => void;
 }
 
-export function Results({ mods, loading, loadingMore, error, hasLoadedMods, hasMore, compact, onRetry, onLoadMore }: ResultsProps): JSX.Element {
+export function Results({ mods, loading, loadingMore, error, hasLoadedMods, hasMore, onRetry, onLoadMore }: ResultsProps): JSX.Element {
   const sentinelRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     const sentinel = sentinelRef.current;
     if (!sentinel || loading || loadingMore || !hasMore || mods.length === 0) return undefined;
+    if (!('IntersectionObserver' in window)) return undefined;
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) onLoadMore();
@@ -89,7 +89,7 @@ export function Results({ mods, loading, loadingMore, error, hasLoadedMods, hasM
     <>
       <div className="results-grid">
         {mods.map((mod) => (
-          <ModCard key={mod.id} mod={mod} compact={compact} />
+          <ModCard key={mod.id} mod={mod} />
         ))}
       </div>
       {loader}
