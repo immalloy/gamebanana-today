@@ -6,6 +6,8 @@ import { FilterSidebar } from './components/FilterSidebar';
 import { GameSelector } from './components/GameSelector';
 import { Highlights } from './components/Highlights';
 import { Results } from './components/Results';
+import { fetchGameProfilePage } from './api/gamebanana';
+import { normalizeGame } from './api/normalizeGame';
 import { useGameMods } from './hooks/useGameMods';
 import { useGames } from './hooks/useGames';
 import { formatRange, rangeLabel as getRangeLabel } from './lib/date';
@@ -28,6 +30,7 @@ const appBasePath = import.meta.env.BASE_URL || '/';
 interface RouteState {
   gameId: number | null;
   gameName: string | null;
+  gameImage: string | null;
 }
 
 function routeFromLocation(): RouteState {
@@ -37,6 +40,7 @@ function routeFromLocation(): RouteState {
   return {
     gameId: Number.isFinite(gameId) && gameId > 0 ? gameId : null,
     gameName: params.get('name'),
+    gameImage: params.get('image'),
   };
 }
 
@@ -44,42 +48,96 @@ function gameUrl(game: GameSummary): string {
   const params = new URLSearchParams();
   params.set('game', String(game.id));
   params.set('name', game.name);
+  if (game.imageUrl) params.set('image', game.imageUrl);
   return `${appBasePath}?${params.toString()}`;
+}
+
+function setMeta(selector: string, attribute: 'name' | 'property', key: string, content: string | null): void {
+  let element = document.head.querySelector<HTMLMetaElement>(selector);
+  if (!content) {
+    element?.remove();
+    return;
+  }
+  if (!element) {
+    element = document.createElement('meta');
+    element.setAttribute(attribute, key);
+    document.head.appendChild(element);
+  }
+  element.setAttribute('content', content);
+}
+
+function usePageMeta(title: string, description: string, image?: string): void {
+  useEffect(() => {
+    document.title = title;
+    setMeta('meta[name="description"]', 'name', 'description', description);
+    setMeta('meta[property="og:title"]', 'property', 'og:title', title);
+    setMeta('meta[property="og:description"]', 'property', 'og:description', description);
+    setMeta('meta[property="og:url"]', 'property', 'og:url', window.location.href);
+    setMeta('meta[property="og:image"]', 'property', 'og:image', image || null);
+    setMeta('meta[name="twitter:card"]', 'name', 'twitter:card', image ? 'summary_large_image' : 'summary');
+    setMeta('meta[name="twitter:title"]', 'name', 'twitter:title', title);
+    setMeta('meta[name="twitter:description"]', 'name', 'twitter:description', description);
+    setMeta('meta[name="twitter:image"]', 'name', 'twitter:image', image || null);
+  }, [description, image, title]);
 }
 
 function GameSelectorView({ onSelectGame }: { onSelectGame: (game: GameSummary) => void }): JSX.Element {
   const [filters, setFilters] = useState(defaultGameFilters);
   const { games, loading, loadingMore, error, hasMore, refresh, loadMore } = useGames(filters);
+  usePageMeta('Gamebanana Daily', 'Daily GameBanana mods by game.');
 
   return (
-    <GameSelector
-      games={games}
-      filters={filters}
-      loading={loading}
-      loadingMore={loadingMore}
-      error={error}
-      hasMore={hasMore}
-      onFiltersApply={setFilters}
-      onLoadMore={loadMore}
-      onRetry={refresh}
-      onSelectGame={onSelectGame}
-    />
+    <>
+      <AppHeader title="Gamebanana Daily" />
+      <GameSelector
+        games={games}
+        filters={filters}
+        loading={loading}
+        loadingMore={loadingMore}
+        error={error}
+        hasMore={hasMore}
+        onFiltersApply={setFilters}
+        onLoadMore={loadMore}
+        onRetry={refresh}
+        onSelectGame={onSelectGame}
+      />
+    </>
   );
 }
 
-function GameModsView({ gameId, gameName, onBack }: { gameId: number; gameName: string; onBack: () => void }): JSX.Element {
+function GameModsView({ gameId, gameName, gameImage, onBack }: { gameId: number; gameName: string; gameImage?: string; onBack: () => void }): JSX.Element {
   const [rangeMode, setRangeMode] = useState<RangeMode>('daily');
   const { mods, loading, loadingMore, error, range, hasMore, refresh, loadMore } = useGameMods({ gameId, rangeMode });
   const [search, setSearch] = useState('');
   const [sortMode, setSortMode] = useState<SortMode>('newest');
   const [filters, setFilters] = useState<FilterState>(defaultFilters);
   const [noDuplicateHighlights, setNoDuplicateHighlights] = useState(false);
+  const [profileGame, setProfileGame] = useState<GameSummary | null>(null);
 
   const categories = useMemo(() => getCategoryOptions(mods), [mods]);
   const visibleMods = useMemo(() => sortMods(applyFilters(mods, search, filters), sortMode), [filters, mods, search, sortMode]);
   const highlights = useMemo(() => selectHighlights(mods, noDuplicateHighlights), [mods, noDuplicateHighlights]);
   const readableRange = getRangeLabel(rangeMode);
   const formattedRange = formatRange(rangeMode, range.start, range.end);
+  const displayGameName = profileGame?.name || gameName;
+  const displayImage = profileGame?.imageUrl || gameImage;
+  const pageTitle = `${displayGameName} ${readableRange}`;
+  const pageDescription = `${readableRange} GameBanana mods for ${displayGameName}.`;
+  usePageMeta(pageTitle, pageDescription, displayImage);
+
+  useEffect(() => {
+    const controller = new AbortController();
+    setProfileGame(null);
+    fetchGameProfilePage(gameId, controller.signal)
+      .then((profile) => {
+        const game = normalizeGame(profile);
+        if (game) setProfileGame(game);
+      })
+      .catch(() => {
+        if (!controller.signal.aborted) setProfileGame(null);
+      });
+    return () => controller.abort();
+  }, [gameId]);
 
   const activeSummary = [
     search.trim() ? `search "${search.trim()}"` : '',
@@ -88,7 +146,9 @@ function GameModsView({ gameId, gameName, onBack }: { gameId: number; gameName: 
   ].filter(Boolean);
 
   return (
-    <div className="app-shell">
+    <>
+      <AppHeader title={pageTitle} subtitle={pageDescription} />
+      <div className="app-shell">
       <FilterSidebar
         filters={filters}
         sortMode={sortMode}
@@ -114,7 +174,7 @@ function GameModsView({ gameId, gameName, onBack }: { gameId: number; gameName: 
             Games
           </Button>
           <div>
-            <h1>{gameName}</h1>
+            <h1>{pageTitle}</h1>
             <p>{readableRange} Mods / {formattedRange}</p>
           </div>
         </section>
@@ -129,7 +189,7 @@ function GameModsView({ gameId, gameName, onBack }: { gameId: number; gameName: 
           </div>
           <Results
             mods={visibleMods}
-            gameName={gameName}
+            gameName={displayGameName}
             rangeLabel={readableRange}
             loading={loading}
             loadingMore={loadingMore}
@@ -141,7 +201,8 @@ function GameModsView({ gameId, gameName, onBack }: { gameId: number; gameName: 
           />
         </section>
       </main>
-    </div>
+      </div>
+    </>
   );
 }
 
@@ -156,19 +217,18 @@ function App(): JSX.Element {
 
   const selectGame = (game: GameSummary) => {
     window.history.pushState(null, '', gameUrl(game));
-    setRoute({ gameId: game.id, gameName: game.name });
+    setRoute({ gameId: game.id, gameName: game.name, gameImage: game.imageUrl || null });
   };
 
   const backToGames = () => {
     window.history.pushState(null, '', appBasePath);
-    setRoute({ gameId: null, gameName: null });
+    setRoute({ gameId: null, gameName: null, gameImage: null });
   };
 
   return (
     <Box vertical className="app background">
-      <AppHeader />
       {route.gameId ? (
-        <GameModsView gameId={route.gameId} gameName={route.gameName || `Game ${route.gameId}`} onBack={backToGames} />
+        <GameModsView gameId={route.gameId} gameName={route.gameName || `Game ${route.gameId}`} gameImage={route.gameImage || undefined} onBack={backToGames} />
       ) : (
         <GameSelectorView onSelectGame={selectGame} />
       )}

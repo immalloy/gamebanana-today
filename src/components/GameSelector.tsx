@@ -65,8 +65,7 @@ export function GameSelector({ games, filters, loading, loadingMore, error, hasM
     <main className="selector-page">
       <section className="selector-toolbar">
         <div>
-          <h1>Games</h1>
-          <p>Browse GameBanana games and open the Mods feed for a daily, weekly, or monthly window.</p>
+          <h1>Gamebanana Daily</h1>
         </div>
         <div className="selector-filters">
           <label className="field">
