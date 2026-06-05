@@ -4,6 +4,7 @@ export interface GameBananaImage {
   _sFile100?: string;
   _sFile220?: string;
   _sFile530?: string;
+  _sUrl?: string;
   _sCaption?: string;
   _sType?: string;
 }
@@ -48,4 +49,19 @@ export interface GameBananaModRecord {
   _nDownloadCount?: number;
   _sDescription?: string;
   _aFiles?: GameBananaFile[];
+}
+
+export interface GameBananaGameRecord {
+  _idRow?: number | string;
+  _sName?: string;
+  _sProfileUrl?: string;
+  _sIconUrl?: string;
+  _sBannerUrl?: string;
+  _sImageUrl?: string;
+  _nSubmitCount?: number | string;
+  _nSubmissionCount?: number | string;
+  _nModCount?: number | string;
+  _aPreviewMedia?: {
+    _aImages?: GameBananaImage[];
+  };
 }
