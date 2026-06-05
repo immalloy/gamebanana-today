@@ -1,0 +1,42 @@
+{
+  "name": "funkin-today",
+  "version": "1.0.0",
+  "description": "Browse Friday Night Funkin' GameBanana mods released today.",
+  "private": true,
+  "main": "index.js",
+  "scripts": {
+    "dev": "vite --host 127.0.0.1",
+    "build": "tsc --noEmit && vite build",
+    "test": "vitest run",
+    "preview": "vite preview --host 127.0.0.1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/immalloy/funkin-today.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "MIT",
+  "type": "module",
+  "bugs": {
+    "url": "https://github.com/immalloy/funkin-today/issues"
+  },
+  "homepage": "https://github.com/immalloy/funkin-today#readme",
+  "dependencies": {
+    "@vitejs/plugin-react": "^6.0.2",
+    "lucide-react": "^1.17.0",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
+    "vite": "^8.0.16",
+    "web-toolkit": "^0.8.0"
+  },
+  "devDependencies": {
+    "@testing-library/jest-dom": "^6.9.1",
+    "@testing-library/react": "^12.1.5",
+    "@types/react": "^17.0.90",
+    "@types/react-dom": "^17.0.26",
+    "jsdom": "^27.3.0",
+    "typescript": "^5.9.3",
+    "vitest": "^4.0.15"
+  }
+}
