@@ -1,6 +1,7 @@
 import { RotateCcw } from 'lucide-react';
 import type { ChangeEvent } from 'react';
 import { Button, Dropdown, Input } from 'web-toolkit';
+import { categoryLabel } from '../lib/filterSort';
 import type { RangeMode } from '../types/game';
 import type { FilterState, SortMode } from '../types/mod';
 
@@ -27,7 +28,7 @@ const sortOptions = [
 ];
 
 function toOptions(values: string[]): Array<{ value: string; label: string }> {
-  return [{ value: 'all', label: 'All' }, ...values.map((value) => ({ value, label: value }))];
+  return [{ value: 'all', label: 'All' }, ...values.map((value) => ({ value, label: categoryLabel(value) }))];
 }
 
 const rangeOptions: Array<{ value: RangeMode; label: string }> = [
@@ -63,7 +64,7 @@ export function FilterSidebar({ filters, sortMode, search, rangeMode, categories
         <Dropdown options={sortOptions} value={sortMode} onChange={(value: SortMode) => onSortModeChange(value)} />
       </label>
       <label className="field">
-        <span>Category path</span>
+        <span>Category</span>
         <Dropdown options={toOptions(categories)} value={filters.category} onChange={(value: string) => update('category', value)} />
       </label>
       <div className="filter-actions">

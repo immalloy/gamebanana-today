@@ -40,3 +40,8 @@ export function getCategoryOptions(mods: ModSummary[]): string[] {
     return [root, ...paths];
   });
 }
+
+export function categoryLabel(value: string): string {
+  const parts = value.split(' > ');
+  return parts[parts.length - 1] || value;
+}
