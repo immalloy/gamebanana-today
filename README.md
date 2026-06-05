@@ -1,4 +1,4 @@
-# Gamebanana Today
+# GameBanana Today
 
 Browse daily, weekly, and monthly GameBanana mods by game.
 

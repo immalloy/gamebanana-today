@@ -65,7 +65,7 @@ export function GameSelector({ games, filters, loading, loadingMore, error, hasM
     <main className="selector-page">
       <section className="selector-toolbar">
         <div>
-          <h1>Gamebanana Daily</h1>
+          <h1>GameBanana Daily</h1>
         </div>
         <div className="selector-filters">
           <label className="field">
