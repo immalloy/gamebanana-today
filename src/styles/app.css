@@ -54,6 +54,10 @@ a {
   border-bottom: 1px solid var(--border);
 }
 
+.app-header > .Box {
+  gap: 12px;
+}
+
 .HeaderBar__title {
   min-width: 150px;
   margin-right: auto;
@@ -62,7 +66,7 @@ a {
 }
 
 .search-group {
-  width: min(34vw, 430px);
+  width: min(42vw, 520px);
   min-width: 220px;
   position: relative;
 }
@@ -113,8 +117,7 @@ a {
 }
 
 .sidebar-title,
-.section-heading,
-.card-actions {
+.section-heading {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -289,23 +292,15 @@ a {
   padding: 12px;
 }
 
-.mod-card__meta {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 10px;
-  color: var(--muted);
-  font-size: 12px;
-}
-
 .mod-card h3 {
-  margin: 8px 0 3px;
+  margin: 0 0 3px;
   font-size: 17px;
   line-height: 1.25;
   overflow-wrap: anywhere;
 }
 
 .byline,
+.card-meta-line,
 .mod-summary {
   margin: 0;
   color: var(--muted);
@@ -313,6 +308,19 @@ a {
 
 .byline {
   font-size: 13px;
+}
+
+.card-meta-line {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 4px;
+  font-size: 12px;
+}
+
+.card-meta-line span + span::before {
+  content: "/";
+  margin-right: 6px;
 }
 
 .mod-summary {
@@ -348,19 +356,6 @@ a {
   color: var(--muted);
   font-size: 12px;
   font-weight: 700;
-}
-
-.card-actions {
-  margin-top: 12px;
-  color: var(--muted);
-  font-size: 12px;
-}
-
-.link-button {
-  border: 1px solid var(--border);
-  border-radius: 6px;
-  background: var(--panel-strong);
-  text-decoration: none;
 }
 
 .state-panel {
