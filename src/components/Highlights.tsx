@@ -16,10 +16,10 @@ export function Highlights({ highlights, rangeLabel, noDuplicates, onNoDuplicate
     <section className="section">
       <div className="section-heading">
         <h2>{rangeLabel} Highlights</h2>
-        <label className="highlight-toggle">
+        <div className="highlight-toggle">
           <span>No duplicates</span>
           <Switch value={noDuplicates} onChange={(value: boolean) => onNoDuplicatesChange(value)} label="No duplicate highlights" />
-        </label>
+        </div>
       </div>
       <div className="highlight-grid">
         {highlights.map((highlight) => (
