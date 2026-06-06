@@ -82,7 +82,7 @@ export function GameSelector({ games, filters, loading, loadingMore, error, hasM
           </label>
           <div className="selector-actions">
             <Button onClick={apply}>Apply</Button>
-            <Button className="icon-button" onClick={reset} title="Reset game filters">
+            <Button className="icon-button" onClick={reset} title="Reset game filters" aria-label="Reset game filters">
               <RotateCcw size={15} aria-hidden="true" />
             </Button>
           </div>
