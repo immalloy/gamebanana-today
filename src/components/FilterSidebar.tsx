@@ -50,7 +50,7 @@ export function FilterSidebar({ filters, sortMode, search, rangeMode, categories
       </div>
       <div className="segmented" aria-label="Date range">
         {rangeOptions.map((option) => (
-          <button key={option.value} type="button" className={rangeMode === option.value ? 'active' : ''} onClick={() => onRangeModeChange(option.value)}>
+          <button key={option.value} type="button" className={rangeMode === option.value ? 'active' : ''} aria-pressed={rangeMode === option.value} onClick={() => onRangeModeChange(option.value)}>
             {option.label}
           </button>
         ))}
