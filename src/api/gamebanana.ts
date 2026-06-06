@@ -17,6 +17,7 @@ const MOD_PROPERTIES = [
   '_nViewCount',
   '_nDownloadCount',
   '_sDescription',
+  '_sText',
   '_sProfileUrl',
   '_aFiles',
 ].join(',');

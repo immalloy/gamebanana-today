@@ -48,6 +48,7 @@ export interface GameBananaModRecord {
   _nViewCount?: number | string;
   _nDownloadCount?: number | string;
   _sDescription?: string;
+  _sText?: string;
   _aFiles?: GameBananaFile[];
 }
 

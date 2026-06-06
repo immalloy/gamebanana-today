@@ -49,7 +49,7 @@ describe('normalizers', () => {
       _aPreviewMedia: {
         _aImages: [{ _sBaseUrl: 'https://images.example/mod', _sFile530: 'large.png', _sFile220: 'thumb.png' }],
       },
-      _sDescription: '<p>Hello&nbsp;<strong>world</strong></p>',
+      _sDescription: '<p>Hello&nbsp;<strong>world</strong> &amp; friends</p>',
       _nDownloadCount: '12',
       _nViewCount: '34',
       _nLikeCount: '5',
@@ -65,12 +65,34 @@ describe('normalizers', () => {
       categoryPath: 'Skins > Boyfriend',
       imageUrl: 'https://images.example/mod/large.png',
       thumbnailUrl: 'https://images.example/mod/thumb.png',
-      description: 'Hello world',
+      description: 'Hello world & friends',
       downloads: 12,
       views: 34,
       likes: 5,
       fileCount: 1,
       version: '1.2.3',
+    });
+  });
+
+  it('uses mod text when the short description is missing', () => {
+    expect(normalizeMod({
+      _idRow: 100,
+      _sName: 'Text-only Mod',
+      _tsDateAdded: 1_700_000_000,
+      _sText: 'Line one<br><strong>Line two</strong> &#9733;',
+    })).toMatchObject({
+      description: 'Line one Line two ★',
+    });
+  });
+
+  it('leaves unknown and invalid entities intact', () => {
+    expect(normalizeMod({
+      _idRow: 101,
+      _sName: 'Entity Edge Cases',
+      _tsDateAdded: 1_700_000_000,
+      _sText: 'Unknown &madeup; invalid &#9999999999;',
+    })).toMatchObject({
+      description: 'Unknown &madeup; invalid &#9999999999;',
     });
   });
 
