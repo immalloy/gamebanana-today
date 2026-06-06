@@ -7,6 +7,8 @@ interface ModCardProps {
 }
 
 export function ModCard({ mod }: ModCardProps): JSX.Element {
+  const addedTime = new Intl.DateTimeFormat(undefined, { hour: 'numeric', minute: '2-digit' }).format(mod.addedAt);
+
   return (
     <Frame className="mod-card">
       <a className="mod-card__media" href={mod.url} target="_blank" rel="noreferrer" aria-label={`Open ${mod.name}`}>
@@ -17,7 +19,7 @@ export function ModCard({ mod }: ModCardProps): JSX.Element {
         <p className="byline">by {mod.submitterName}</p>
         <p className="card-meta-line">
           <span>{mod.category}</span>
-          <span>{new Intl.DateTimeFormat(undefined, { hour: 'numeric', minute: '2-digit' }).format(mod.addedAt)}</span>
+          <time dateTime={mod.addedAt.toISOString()}>{addedTime}</time>
         </p>
         <div className="stat-row">
           <StatPill type="downloads" value={mod.downloads} label="Downloads" />
