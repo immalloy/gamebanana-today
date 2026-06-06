@@ -1,4 +1,4 @@
-import { HeaderBar } from 'web-toolkit';
+import { HeaderBar } from '../lib/webToolkit';
 
 interface AppHeaderProps {
   title: string;

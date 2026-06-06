@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { ArrowLeft } from 'lucide-react';
-import { Box, Button } from 'web-toolkit';
+import { Box, Button } from './lib/webToolkit';
 import { AppHeader } from './components/AppHeader';
 import { FilterSidebar } from './components/FilterSidebar';
 import { GameSelector } from './components/GameSelector';

@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react';
-import { Button, Frame, InfoBar, Spinner } from 'web-toolkit';
+import { Button, Frame, InfoBar, Spinner } from '../lib/webToolkit';
 import type { ModSummary } from '../types/mod';
 import { ModCard } from './ModCard';
 

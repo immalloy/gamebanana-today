@@ -1,6 +1,6 @@
 import { RotateCcw } from 'lucide-react';
 import type { ChangeEvent } from 'react';
-import { Button, Dropdown, Input } from 'web-toolkit';
+import { Button, Dropdown, Input } from '../lib/webToolkit';
 import { categoryLabel } from '../lib/filterSort';
 import type { RangeMode } from '../types/game';
 import type { FilterState, SortMode } from '../types/mod';
@@ -19,7 +19,7 @@ interface FilterSidebarProps {
   onReset: () => void;
 }
 
-const sortOptions = [
+const sortOptions: Array<{ value: SortMode; label: string }> = [
   { value: 'newest', label: 'Newest' },
   { value: 'oldest', label: 'Oldest' },
   { value: 'downloads', label: 'Downloads' },

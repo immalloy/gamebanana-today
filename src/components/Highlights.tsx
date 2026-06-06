@@ -1,4 +1,4 @@
-import { Frame, Switch } from 'web-toolkit';
+import { Frame, Switch } from '../lib/webToolkit';
 import type { Highlight } from '../lib/highlights';
 import { StatPill } from './StatPill';
 

@@ -33,12 +33,104 @@ body,
 }
 
 button,
-input {
+input,
+select {
   font: inherit;
 }
 
 button {
   color: inherit;
+}
+
+.Input,
+.Dropdown {
+  width: 100%;
+  min-height: 34px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: #ffffff;
+  color: var(--text);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.78), 0 1px 2px rgba(36, 31, 49, 0.06);
+}
+
+.Input {
+  display: block;
+  padding: 6px 10px;
+}
+
+.Dropdown {
+  display: block;
+  padding: 6px 34px 6px 10px;
+  appearance: none;
+  background-image:
+    linear-gradient(45deg, transparent 50%, var(--muted) 50%),
+    linear-gradient(135deg, var(--muted) 50%, transparent 50%);
+  background-position:
+    calc(100% - 18px) 14px,
+    calc(100% - 13px) 14px;
+  background-size: 5px 5px, 5px 5px;
+  background-repeat: no-repeat;
+}
+
+.Input:focus,
+.Dropdown:focus {
+  border-color: var(--accent);
+  outline: 2px solid rgba(53, 132, 228, 0.22);
+  outline-offset: 1px;
+}
+
+.Switch {
+  position: relative;
+  display: inline-flex;
+  width: 42px;
+  height: 24px;
+  flex: 0 0 auto;
+  align-items: center;
+  cursor: pointer;
+}
+
+.Switch input {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.Switch span {
+  width: 100%;
+  height: 100%;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: #d8d4ce;
+  transition: background 140ms ease, border-color 140ms ease;
+}
+
+.Switch span::after {
+  content: "";
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #ffffff;
+  box-shadow: 0 1px 2px rgba(36, 31, 49, 0.2);
+  transition: transform 140ms ease;
+}
+
+.Switch input:checked + span {
+  border-color: var(--accent);
+  background: var(--accent);
+}
+
+.Switch input:checked + span::after {
+  transform: translateX(18px);
+}
+
+.Switch input:focus-visible + span {
+  outline: 2px solid rgba(53, 132, 228, 0.32);
+  outline-offset: 2px;
 }
 
 a {

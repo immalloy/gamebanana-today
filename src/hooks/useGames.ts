@@ -49,14 +49,26 @@ export function useGames(filters: GameFilterState): GamesState {
   const hasMoreRef = useRef(true);
   const loadingRef = useRef(false);
   const controllerRef = useRef<AbortController | null>(null);
+  const requestIdRef = useRef(0);
 
   const loadPage = useCallback(
     async (reset = false): Promise<void> => {
-      if (loadingRef.current) return;
+      if (!reset && loadingRef.current) return;
       if (!reset && !hasMoreRef.current) return;
+
+      if (reset) {
+        controllerRef.current?.abort();
+        nextPageRef.current = 1;
+        hasMoreRef.current = true;
+        loadingRef.current = false;
+        setHasMore(true);
+        setGames([]);
+      }
 
       loadingRef.current = true;
       const controller = new AbortController();
+      const requestId = requestIdRef.current + 1;
+      requestIdRef.current = requestId;
       controllerRef.current = controller;
       if (reset) setLoading(true);
       else setLoadingMore(true);
@@ -78,6 +90,7 @@ export function useGames(filters: GameFilterState): GamesState {
         });
         const normalized = await enrichGameCounts(normalizedGames, controller.signal);
         const reachedEnd = records.length < GAMES_PER_PAGE;
+        if (controller.signal.aborted || requestIdRef.current !== requestId) return;
 
         setGames((current) => {
           if (reset) return normalized;
@@ -88,24 +101,23 @@ export function useGames(filters: GameFilterState): GamesState {
         hasMoreRef.current = !reachedEnd;
         setHasMore(!reachedEnd);
       } catch (cause) {
-        if (!controller.signal.aborted) {
+        if (!controller.signal.aborted && requestIdRef.current === requestId) {
           setError(cause instanceof Error ? cause.message : 'Failed to load GameBanana games');
         }
       } finally {
-        loadingRef.current = false;
-        if (reset) setLoading(false);
-        setLoadingMore(false);
+        if (requestIdRef.current === requestId) {
+          loadingRef.current = false;
+          if (!controller.signal.aborted) {
+            if (reset) setLoading(false);
+            setLoadingMore(false);
+          }
+        }
       }
     },
     [filters.name, filters.nameOperator, filters.sort],
   );
 
   useEffect(() => {
-    controllerRef.current?.abort();
-    nextPageRef.current = 1;
-    hasMoreRef.current = true;
-    setHasMore(true);
-    setGames([]);
     loadPage(true);
     return () => controllerRef.current?.abort();
   }, [loadPage, refreshToken]);

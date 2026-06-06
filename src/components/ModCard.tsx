@@ -1,4 +1,4 @@
-import { Frame } from 'web-toolkit';
+import { Frame } from '../lib/webToolkit';
 import type { ModSummary } from '../types/mod';
 import { StatPill } from './StatPill';
 

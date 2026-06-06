@@ -34,7 +34,7 @@ export interface GameBananaFile {
 }
 
 export interface GameBananaModRecord {
-  _idRow?: number;
+  _idRow?: number | string;
   _sName?: string;
   _sProfileUrl?: string;
   _tsDateAdded?: number | string;
@@ -44,9 +44,9 @@ export interface GameBananaModRecord {
   _aPreviewMedia?: {
     _aImages?: GameBananaImage[];
   };
-  _nLikeCount?: number;
-  _nViewCount?: number;
-  _nDownloadCount?: number;
+  _nLikeCount?: number | string;
+  _nViewCount?: number | string;
+  _nDownloadCount?: number | string;
   _sDescription?: string;
   _aFiles?: GameBananaFile[];
 }

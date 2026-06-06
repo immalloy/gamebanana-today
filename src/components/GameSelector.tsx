@@ -1,7 +1,7 @@
 import type { ChangeEvent } from 'react';
 import { useEffect, useRef, useState } from 'react';
 import { RotateCcw } from 'lucide-react';
-import { Button, Dropdown, Frame, InfoBar, Input, Spinner } from 'web-toolkit';
+import { Button, Dropdown, Frame, InfoBar, Input, Spinner } from '../lib/webToolkit';
 import type { GameFilterState, GameNameOperator, GameSortMode, GameSummary } from '../types/game';
 
 interface GameSelectorProps {

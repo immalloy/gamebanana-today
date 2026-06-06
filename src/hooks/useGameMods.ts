@@ -36,15 +36,28 @@ export function useGameMods({ gameId, rangeMode }: UseGameModsOptions): GameMods
   const hasMoreRef = useRef(true);
   const loadingRef = useRef(false);
   const controllerRef = useRef<AbortController | null>(null);
+  const requestIdRef = useRef(0);
   const [hasMore, setHasMore] = useState(true);
 
   const loadPage = useCallback(
     async (reset = false): Promise<void> => {
-      if (loadingRef.current) return;
+      if (!reset && loadingRef.current) return;
       if (!reset && !hasMoreRef.current) return;
+
+      if (reset) {
+        controllerRef.current?.abort();
+        nextPageRef.current = 1;
+        hasMoreRef.current = true;
+        loadingRef.current = false;
+        setHasMore(true);
+        setMods([]);
+        setAllLoadedCount(0);
+      }
 
       loadingRef.current = true;
       const controller = new AbortController();
+      const requestId = requestIdRef.current + 1;
+      requestIdRef.current = requestId;
       controllerRef.current = controller;
       if (reset) setLoading(true);
       else setLoadingMore(true);
@@ -59,6 +72,7 @@ export function useGameMods({ gameId, rangeMode }: UseGameModsOptions): GameMods
         });
         const inRange = normalized.filter((mod) => isWithinRange(mod.addedAt, range.start, range.end));
         const reachedEnd = records.length < MODS_PER_PAGE || pageHasOlderRecords(records, range.start);
+        if (controller.signal.aborted || requestIdRef.current !== requestId) return;
 
         setMods((current) => {
           if (reset) return inRange;
@@ -71,25 +85,23 @@ export function useGameMods({ gameId, rangeMode }: UseGameModsOptions): GameMods
         hasMoreRef.current = !reachedEnd;
         setHasMore(!reachedEnd);
       } catch (cause) {
-        if (!controller.signal.aborted) {
+        if (!controller.signal.aborted && requestIdRef.current === requestId) {
           setError(cause instanceof Error ? cause.message : 'Failed to load GameBanana mods');
         }
       } finally {
-        loadingRef.current = false;
-        if (reset) setLoading(false);
-        setLoadingMore(false);
+        if (requestIdRef.current === requestId) {
+          loadingRef.current = false;
+          if (!controller.signal.aborted) {
+            if (reset) setLoading(false);
+            setLoadingMore(false);
+          }
+        }
       }
     },
     [gameId, range.end, range.start],
   );
 
   useEffect(() => {
-    controllerRef.current?.abort();
-    nextPageRef.current = 1;
-    hasMoreRef.current = true;
-    setHasMore(true);
-    setMods([]);
-    setAllLoadedCount(0);
     loadPage(true);
     return () => controllerRef.current?.abort();
   }, [loadPage]);
