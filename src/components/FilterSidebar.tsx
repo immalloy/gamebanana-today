@@ -44,7 +44,7 @@ export function FilterSidebar({ filters, sortMode, search, rangeMode, categories
     <aside className="sidebar">
       <div className="sidebar-title">
         <h2>Filters</h2>
-        <Button className="icon-button" onClick={onReset} title="Reset filters">
+        <Button className="icon-button" onClick={onReset} title="Reset filters" aria-label="Reset filters">
           <RotateCcw size={15} aria-hidden="true" />
         </Button>
       </div>
